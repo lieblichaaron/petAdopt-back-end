@@ -1,7 +1,7 @@
 const User = require("../models/userModel");
 const userInstance = new User();
 const { isEmpty } = require("../utils/helper");
-const { createToken } = require("../utils/auth");
+const { createToken, verifyToken } = require("../utils/auth");
 const { encryptPassword } = require("../utils/passwordEncrypt");
 const maxAge = 3 * 24 * 60 * 60 * 1000;
 
@@ -40,10 +40,14 @@ const addNewUser = (req, res) => {
   userInstance.add(newUser);
   const token = createToken(req.body.email);
   res.cookie("jwt", token, { maxAge });
-  res.json("Signup successful");
+  res.send("Signup successful");
 };
 
-const loginUser = (req, res) => {};
+const loginUser = (req, res) => {
+  const token = createToken(req.body.email);
+  res.cookie("jwt", token, { maxAge });
+  res.send("Login successful");
+};
 
 const updateUserById = (req, res) => {
   const { id } = req.params;

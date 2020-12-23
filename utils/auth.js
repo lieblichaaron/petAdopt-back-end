@@ -6,4 +6,13 @@ const createToken = (email) => {
   return jwt.sign({ email }, secretTokenKey);
 };
 
-module.exports = { createToken };
+const verifyToken = async (token) => {
+  try {
+    jwt.verify(token, secretTokenKey);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+module.exports = { createToken, verifyToken };

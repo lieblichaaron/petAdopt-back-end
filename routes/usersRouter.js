@@ -29,7 +29,7 @@ router.post(
 router.post("/login", validateUserLogin, handleValidationErrors, (req, res) => {
   // Check the email and password match an existing user
   // Retrieve the users data from the database and login the user.
-  console.log(req.body);
+  console.log(req.cookies);
   res.send("Login successful");
 });
 
