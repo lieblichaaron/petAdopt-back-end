@@ -1,3 +1,4 @@
+const { checkPassword } = require("../utils/passwordEncrypt");
 const { body, validationResult } = require("express-validator");
 
 const validateUserSignup = [
@@ -13,7 +14,18 @@ const validateUserSignup = [
   body("phoneNumber").isMobilePhone(),
 ];
 
-const validateUserLogin = [body("email").isEmail(), body("password").exists()];
+const validateUserLogin = [
+  body("email").isEmail(),
+  body("password").exists(),
+  // body("password").custom((value, { req }) => {
+  //   /* get encrypted password assosiated with req.body.email from db*/
+  //   if (checkPassword(value, hash)) {
+  //     return true;
+  //   } else {
+  //     throw new Error("Email or password is incorrect");
+  //   }
+  // }),
+];
 
 const handleValidationErrors = (req, res, next) => {
   const errors = validationResult(req);

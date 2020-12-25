@@ -69,5 +69,25 @@
         "breedOfAnimal": "Poodle"
       }
     ]
+  },
+  {
+    "fullName": "Aaron Lieblich",
+    "email": "Lieblichaaron@gmail.com",
+    "password": "$2b$10$lAJOmwQxsaSS8xuMPHFh0OIqyGWQymFnUrrzDhor22UTnGijw3tU.",
+    "phoneNumber": "0586190696",
+    "bio": "",
+    "savedPets": [],
+    "pets": [],
+    "id": 2
+  },
+  {
+    "fullName": "Aaron Lieblich",
+    "email": "Lieblichaaron@gmail.com",
+    "password": "$2b$10$qvNRpg3uF6PeRctjno.msu3JuDnd1xFB86FEw21JRSwEsBO4JM7zG",
+    "phoneNumber": "0586190696",
+    "bio": "",
+    "savedPets": [],
+    "pets": [],
+    "id": 2
   }
 ]

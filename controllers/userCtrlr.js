@@ -38,15 +38,20 @@ const addNewUser = (req, res) => {
     id: 2,
   };
   userInstance.add(newUser);
+  /*id when using db*/
   const token = createToken(req.body.email);
+  /*make sure the cookie cant time out when user is online*/
   res.cookie("jwt", token, { maxAge });
-  res.send("Signup successful");
+  /*send id of req.body.email*/
+  res.send("1");
 };
 
 const loginUser = (req, res) => {
   const token = createToken(req.body.email);
+  /*make sure the cookie cant time out when user is online*/
   res.cookie("jwt", token, { maxAge });
-  res.send("Login successful");
+  /*send id of req.body.email*/
+  res.send("1");
 };
 
 const updateUserById = (req, res) => {

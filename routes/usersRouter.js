@@ -17,21 +17,10 @@ const {
 } = require("../controllers/validator");
 
 /* fullName, email, password, phoneNumber */
-router.post(
-  "/signup",
-  validateUserSignup,
-  handleValidationErrors,
-  addNewUser,
-  loginUser
-);
+router.post("/signup", validateUserSignup, handleValidationErrors, addNewUser);
 
 /*email, password*/
-router.post("/login", validateUserLogin, handleValidationErrors, (req, res) => {
-  // Check the email and password match an existing user
-  // Retrieve the users data from the database and login the user.
-  console.log(req.cookies);
-  res.send("Login successful");
-});
+router.post("/login", validateUserLogin, handleValidationErrors, loginUser);
 
 router.get("/:id/pets", (req, res) => {
   const { id } = req.params;
