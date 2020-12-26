@@ -73,7 +73,7 @@
   {
     "fullName": "Aaron Lieblich",
     "email": "Lieblichaaron@gmail.com",
-    "password": "$2b$10$lAJOmwQxsaSS8xuMPHFh0OIqyGWQymFnUrrzDhor22UTnGijw3tU.",
+    "password": "$2b$10$KSrT9GsVy3V0Roi/FKSmb.cVX1.AAX4mNiUR4ZifS0MHSyh46A/bK",
     "phoneNumber": "0586190696",
     "bio": "",
     "savedPets": [],
@@ -83,7 +83,47 @@
   {
     "fullName": "Aaron Lieblich",
     "email": "Lieblichaaron@gmail.com",
-    "password": "$2b$10$qvNRpg3uF6PeRctjno.msu3JuDnd1xFB86FEw21JRSwEsBO4JM7zG",
+    "password": "$2b$10$0ocm14uqCEOKLh4sL0GfP.vAZpk7apZGQ7Lt8xCFNJxoq3DBID7TG",
+    "phoneNumber": "0586190696",
+    "bio": "",
+    "savedPets": [],
+    "pets": [],
+    "id": 2
+  },
+  {
+    "fullName": "Aaron Lieblich",
+    "email": "Lieblichaaron@gmail.com",
+    "password": "$2b$10$5KOlovOBgEyY3KrSnzUQn.QsJ8ka31RQvd2OH8vSdLCcLQVCjEL2S",
+    "phoneNumber": "0586190696",
+    "bio": "",
+    "savedPets": [],
+    "pets": [],
+    "id": 2
+  },
+  {
+    "fullName": "Aaron Lieblich",
+    "email": "Lieblichaaron@gmail.com",
+    "password": "$2b$10$JAl8buYIyXXNRJ6.t25G8emzNX5kF79L.c4WrjdSTlv6kl36e5v/y",
+    "phoneNumber": "0586190696",
+    "bio": "",
+    "savedPets": [],
+    "pets": [],
+    "id": 2
+  },
+  {
+    "fullName": "Aaron Lieblich",
+    "email": "Lieblichaaron@gmail.com",
+    "password": "$2b$10$cqDWdYMCtZ5nLJQQs.F96.vxhVGga2IAzVteDAQ/BY1wb3ChTDjbG",
+    "phoneNumber": "0586190696",
+    "bio": "",
+    "savedPets": [],
+    "pets": [],
+    "id": 2
+  },
+  {
+    "fullName": "Aaron Lieblich",
+    "email": "Lieblichaaron@gmail.com",
+    "password": "$2b$10$BTMUO4OmVUvkS7fSHrckyuXH0La5MqjC7KQI52iIYnVymANas8bHy",
     "phoneNumber": "0586190696",
     "bio": "",
     "savedPets": [],

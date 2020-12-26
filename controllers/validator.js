@@ -18,6 +18,7 @@ const validateUserLogin = [
   body("email").isEmail(),
   body("password").exists(),
   // body("password").custom((value, { req }) => {
+  //   /*check that email exists in database if not throw new Error("That email address does not exist")*/
   //   /* get encrypted password assosiated with req.body.email from db*/
   //   if (checkPassword(value, hash)) {
   //     return true;

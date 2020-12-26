@@ -8,6 +8,7 @@ const {
   addNewUser,
   updateUserById,
   loginUser,
+  loginUserWithToken,
 } = require("../controllers/userCtrlr");
 
 const {
@@ -21,6 +22,7 @@ router.post("/signup", validateUserSignup, handleValidationErrors, addNewUser);
 
 /*email, password*/
 router.post("/login", validateUserLogin, handleValidationErrors, loginUser);
+router.get("/login/:token", loginUserWithToken);
 
 router.get("/:id/pets", (req, res) => {
   const { id } = req.params;

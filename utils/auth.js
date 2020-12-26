@@ -9,8 +9,7 @@ const createToken = (userId) => {
 const verifyToken = async (token) => {
   try {
     const payload = await jwt.verify(token, secretTokenKey);
-    console.log(payload);
-    return true;
+    return payload;
   } catch {
     return false;
   }
