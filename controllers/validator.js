@@ -1,6 +1,14 @@
 const { checkPassword } = require("../utils/passwordEncrypt");
 const { body, validationResult } = require("express-validator");
+const { verifyToken } = require("../utils/auth");
 
+const checkAdminStatus = async (req, res, next) => {
+  const token = req.cookies.jwt;
+  const payload = await verifyToken(token);
+  const id = JSON.stringify(payload.userId);
+  /*check that user with id is admin if false throw Error*/
+  next();
+};
 const validateUserSignup = [
   body("email").isEmail(),
   //   body("email").custom((value, { req }) => {
@@ -41,4 +49,5 @@ module.exports = {
   validateUserSignup,
   validateUserLogin,
   handleValidationErrors,
+  checkAdminStatus,
 };

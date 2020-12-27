@@ -2,7 +2,7 @@ const fs = require("fs");
 
 const filePath = "./users.json";
 
-module.exports = class Employee {
+module.exports = class User {
   constructor() {
     this.db = JSON.parse(fs.readFileSync(filePath, "utf8"));
   }
@@ -37,7 +37,7 @@ module.exports = class Employee {
   };
 
   findByParams = (queryParams = {}) => {
-    let found = this.db.filter((employee) =>
+    let found = this.db.filter((user) =>
       Object.keys(queryParams).every((key) => user[key] == queryParams[key])
     );
 

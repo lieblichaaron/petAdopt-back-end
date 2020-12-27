@@ -3,9 +3,13 @@ const router = express.Router();
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+const { addNewPet } = require("../controllers/petCtrlr");
+const { checkAdminStatus } = require("../controllers/validator");
 
 const storage = multer.diskStorage({
-  destination: "./pet-images",
+  destination: (req, file, callback) => {
+    callback(null, "./pet-images");
+  },
   filename: (req, file, cb) => {
     cb(
       null,
@@ -17,24 +21,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // (Protected to admin only)
-router.post("/pet", (req, res) => {
-  //     The add pet api is responsible for adding new pets
-  // Validate all the user input is valid
-  // Handle photo upload
-  // Store pet information in the database
-  // Fields:
-  // Type
-  // Name
-  // Adoption Status (Adopted, Fostered, Available)
-  // Picture (Picture location URL/Path)
-  // Height (number)
-  // Weight (Number)
-  // Color
-  // Bio
-  // Hypoallergenic (Boolean)
-  // Dietary restrictions
-  // Breed
-});
+router.post("/pet", checkAdminStatus, upload.single("picture"), addNewPet);
 
 router.get("/pet/:id", (req, res) => {
   const { id } = req.params;

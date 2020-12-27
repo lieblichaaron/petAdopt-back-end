@@ -3,7 +3,6 @@ const userInstance = new User();
 const { isEmpty } = require("../utils/helper");
 const { createToken, verifyToken } = require("../utils/auth");
 const { encryptPassword } = require("../utils/passwordEncrypt");
-const { json } = require("express");
 const maxAge = 3 * 24 * 60 * 60 * 1000;
 
 const getUsers = (req, res) => {

@@ -13,9 +13,11 @@ app.use(
     credentials: true,
   })
 );
+
 app.use(express.json());
 app.use(express.static("pet-images"));
 app.use(cookieParser());
+
 app.use("/users", usersRouter);
 
 app.use("/pets", petsRouter);

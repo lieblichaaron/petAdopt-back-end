@@ -1,42 +1,44 @@
 const Pet = require("../models/petModel");
+const petInstance = new Pet();
 const { isEmpty } = require("../utils/helper");
 
 const getPets = (req, res) => {
   const queryParams = req.query;
 
   const petList = isEmpty(queryParams)
-    ? Pet.findAll()
-    : Pet.findByParams(queryParams);
+    ? petInstance.findAll()
+    : petInstance.findByParams(queryParams);
 
   res.json(petList);
 };
 
 const getPetById = (req, res) => {
-  const pet = Pet.findById(req.params.id);
+  const pet = petInstance.findById(req.params.id);
   res.json(pet);
 };
 
 const deletePetById = (req, res) => {
   const { id } = req.params;
 
-  const petList = Pet.deleteById(id);
+  const petList = petInstance.deleteById(id);
 
   res.json(petList);
 };
 
 const addNewPet = (req, res) => {
-  const newPet = req.body;
+  newPet = JSON.parse(req.body.data);
+  newPet.picture = req.file.filename;
 
-  const petList = Pet.add(newPet);
+  const petList = petInstance.add(newPet);
 
-  res.json(petList);
+  res.json(JSON.stringify("success"));
 };
 
 const updatePetById = (req, res) => {
   const { id } = req.params;
   const newPetInfo = req.body;
 
-  const petList = Pet.updateById(id, newPetInfo);
+  const petList = petInstance.updateById(id, newPetInfo);
 
   res.json(petList);
 };
