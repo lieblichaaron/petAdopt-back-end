@@ -55,10 +55,12 @@ const loginUser = (req, res) => {
   res.send(JSON.stringify(req.body.email));
 };
 const loginUserWithToken = async (req, res) => {
-  const { token } = req.params;
+  const token = req.cookies.jwt;
   const payload = await verifyToken(token);
-  JSON.stringify(payload.userId);
-  res.send(JSON.stringify(payload.userId));
+  const id = JSON.stringify(payload.userId);
+  const newToken = createToken(payload.userId);
+  res.cookie("jwt", newToken, { maxAge });
+  res.send(id);
 };
 const updateUserById = (req, res) => {
   const { id } = req.params;
