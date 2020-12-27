@@ -28,6 +28,7 @@ const deletePetById = (req, res) => {
 const addNewPet = (req, res) => {
   newPet = JSON.parse(req.body.data);
   newPet.picture = req.file.filename;
+  newPet.ownerId = null;
 
   const petList = petInstance.add(newPet);
 

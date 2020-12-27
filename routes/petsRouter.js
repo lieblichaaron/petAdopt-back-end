@@ -3,7 +3,7 @@ const router = express.Router();
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
-const { addNewPet } = require("../controllers/petCtrlr");
+const { addNewPet, getPetById } = require("../controllers/petCtrlr");
 const { checkAdminStatus } = require("../controllers/validator");
 
 const storage = multer.diskStorage({
@@ -23,10 +23,7 @@ const upload = multer({ storage });
 // (Protected to admin only)
 router.post("/pet", checkAdminStatus, upload.single("picture"), addNewPet);
 
-router.get("/pet/:id", (req, res) => {
-  const { id } = req.params;
-  res.json(petsObj[id]);
-});
+router.get("/pet/:id", getPetById);
 
 //   (protected to admin only)
 router.put("/:id", (req, res) => {

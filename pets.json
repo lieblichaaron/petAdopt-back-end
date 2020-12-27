@@ -118,18 +118,5 @@
     "hypoallergenic": true,
     "dietaryRestrictions": null,
     "breedOfAnimal": "Poodle"
-  },
-  {
-    "type": "Dog",
-    "name": "Doggy",
-    "adoptionStatus": "Looking for a new home",
-    "height": "30",
-    "weight": "10",
-    "color": "Blue",
-    "bio": "Cute",
-    "hypoallergenic": true,
-    "dietaryRestrictions": "",
-    "breedOfAnimal": "Dog",
-    "picture": "picture-1609088765577.jpg"
   }
 ]
