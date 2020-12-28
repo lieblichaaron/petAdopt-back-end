@@ -1,12 +1,12 @@
-const fs = require("fs");
-
-const filePath = "./users.json";
-
+const { createClient } = require("../utils/db");
+const client = createClient();
+const connectToDb = async () => {
+  await client.connect();
+  const db = client.db("PetAdopt");
+  const usersCollection = db.collection("users");
+  return usersCollection;
+};
 module.exports = class User {
-  constructor() {
-    this.db = JSON.parse(fs.readFileSync(filePath, "utf8"));
-  }
-
   findById = (id) => {
     return this.db.find((user) => user.id == id);
   };
@@ -21,10 +21,12 @@ module.exports = class User {
     return newUserList;
   };
 
-  add = (userData) => {
-    this.db.push(userData);
-    this.writeToFile(this.db);
-    return this.db;
+  add = async (userData) => {
+    const usersCollection = await connectToDb();
+    const newUsersList = await usersCollection.insertOne(userData);
+
+    client.close();
+    return newUsersList.insertedId;
   };
 
   updateById = (id, newUserInfo) => {

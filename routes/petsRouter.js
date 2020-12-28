@@ -26,7 +26,7 @@ router.post("/pet", checkAdminStatus, upload.single("picture"), addNewPet);
 router.get("/pet/:id", getPetById);
 
 //   (protected to admin only)
-router.put("/:id", (req, res) => {
+router.put("/:id", checkAdminStatus, (req, res) => {
   // The add pet api is responsible for editing pets
   // Validate all the user input is valid
   // Handle photo upload

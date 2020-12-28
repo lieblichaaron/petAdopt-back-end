@@ -25,12 +25,12 @@ const deletePetById = (req, res) => {
   res.json(petList);
 };
 
-const addNewPet = (req, res) => {
+const addNewPet = async (req, res) => {
   newPet = JSON.parse(req.body.data);
   newPet.picture = req.file.filename;
   newPet.ownerId = null;
 
-  const petList = petInstance.add(newPet);
+  const petList = await petInstance.add(newPet);
 
   res.json(JSON.stringify("success"));
 };

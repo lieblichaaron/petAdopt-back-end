@@ -3,7 +3,7 @@ const app = express();
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const port = 5000;
-
+require("dotenv").config();
 const usersRouter = require("./routes/usersRouter");
 const petsRouter = require("./routes/petsRouter");
 

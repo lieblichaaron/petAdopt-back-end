@@ -28,22 +28,18 @@ const deleteUserById = (req, res) => {
   res.json(userList);
 };
 
-const addNewUser = (req, res) => {
+const addNewUser = async (req, res) => {
   const newUser = {
     ...req.body,
     password: encryptPassword(req.body.password),
     bio: "",
     savedPets: [],
     pets: [],
-    id: 2,
   };
-  userInstance.add(newUser);
-  /*id when using db*/
-  const token = createToken(req.body.email);
-  /*make sure the cookie cant time out when user is online*/
+  const userId = await userInstance.add(newUser);
+  const token = createToken(userId);
   res.cookie("jwt", token, { maxAge });
-  /*send id of req.body.email*/
-  res.send(JSON.stringify(req.body.email));
+  res.send(JSON.stringify(userId));
 };
 
 const loginUser = (req, res) => {

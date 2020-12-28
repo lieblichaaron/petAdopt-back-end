@@ -11,12 +11,13 @@ const checkAdminStatus = async (req, res, next) => {
 };
 const validateUserSignup = [
   body("email").isEmail(),
-  //   body("email").custom((value, { req }) => {
-  //     if (value === /*another email in the db*/) {
-  //       throw new Error("An account already exists with that email");
-  //     }
-  //     return true;
-  //   }),
+  // body("email").custom((value, { req }) => {
+
+  //   if (value === /*another email in the db*/) {
+  //     throw new Error("An account already exists with that email");
+  //   }
+  //   return true;
+  // }),
   body("password").isLength({ min: 6 }),
   body("fullName").exists(),
   body("phoneNumber").isMobilePhone(),
