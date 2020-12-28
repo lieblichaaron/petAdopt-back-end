@@ -1,48 +1,114 @@
-const { createClient } = require("../utils/db");
-const client = createClient();
+const { client } = require("../utils/db");
+const { ObjectID } = require("mongodb");
+
+// const client = createClient();
+const connectToDb = async () => {
+  await client.connect();
+  const db = client.db("PetAdopt");
+  const usersCollection = db.collection("pets");
+  return usersCollection;
+};
 module.exports = class Pet {
-  findById = (id) => {
-    return this.db.find((pet) => pet.id == id);
+  findById = async (id) => {
+    try {
+      const petsCollection = await connectToDb();
+      const pet = await petsCollection.findOne({
+        _id: ObjectID(id),
+      });
+      return pet;
+    } catch (err) {
+      return err.stack;
+    } finally {
+      await client.close();
+    }
   };
 
-  writeToFile = (data) => {
-    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
-  };
-
-  deleteById = (id) => {
-    const newPetList = this.db.filter((pet) => pet.id != id);
-    this.writeToFile(newPetList);
-    return newPetList;
+  deleteById = async (id) => {
+    try {
+      const petsCollection = await connectToDb();
+      await petsCollection.deleteOne({
+        _id: ObjectID(id),
+      });
+      return "Pet deleted";
+    } catch (err) {
+      return err.stack;
+    } finally {
+      await client.close();
+    }
   };
 
   add = async (petData) => {
-    await client.connect();
-    const db = client.db("PetAdopt");
-    const petsCollection = db.collection("pets");
-    const newPetList = await petsCollection.insertOne(petData);
-    console.log(newPetList);
-    client.close();
-    return newPetList;
+    try {
+      const petsCollection = await connectToDb();
+      const newPetsList = await petsCollection.insertOne(petData);
+      return newPetsList.insertedId;
+    } catch (err) {
+      return err.stack;
+    } finally {
+      await client.close();
+    }
   };
 
-  updateById = (id, newPetInfo) => {
-    const newPetList = this.db.map((pet) =>
-      pet.id == id ? { ...pet, ...newPetInfo } : pet
-    );
-
-    this.writeToFile(newPetList);
-    return newPetList;
+  updateById = async (id, newPetInfo) => {
+    try {
+      const petsCollection = await connectToDb();
+      await petsCollection.updateOne(
+        {
+          _id: ObjectID(id),
+        },
+        {
+          $set: {
+            type: newPetInfo.type,
+            name: newPetInfo.name,
+            height: newPetInfo.height,
+            adoptionStatus: newPetInfo.adoptionStatus,
+            weight: newPetInfo.weight,
+            color: newPetInfo.color,
+            bio: newPetInfo.bio,
+            hypoallergenic: newPetInfo.hypoallergenic,
+            dietaryRestrictions: newPetInfo.dietaryRestrictions,
+            breedOfAnimal: newPetInfo.breedOfAnimal,
+            picture: newPetInfo.picture,
+          },
+        }
+      );
+      return "Changes saved";
+    } catch (err) {
+      return err.stack;
+    } finally {
+      await client.close();
+    }
   };
 
-  findByParams = (queryParams = {}) => {
-    let found = this.db.filter((pet) =>
-      Object.keys(queryParams).every((key) => pet[key] == queryParams[key])
-    );
+  findByParams = async (params) => {
+    try {
+      const petsCollection = await connectToDb();
+      const searchedPetInfo = {};
+      if (params.type) searchedPetInfo.type = params.type;
+      if (params.name) searchedPetInfo.name = params.name;
+      if (params.adoptionStatus)
+        searchedPetInfo.adoptionStatus = params.adoptionStatus;
+      if (params.height) searchedPetInfo.height = params.height;
+      if (params.weight) searchedPetInfo.weight = params.weight;
 
-    return found;
+      const pet = await petsCollection.find(searchedPetInfo);
+      return pet;
+    } catch (err) {
+      return err.stack;
+    } finally {
+      await client.close();
+    }
   };
 
-  findAll = () => {
-    return this.db;
+  findAll = async () => {
+    try {
+      const petsCollection = await connectToDb();
+      const allPets = await petsCollection.find();
+      return allPets;
+    } catch (err) {
+      return err.stack;
+    } finally {
+      await client.close();
+    }
   };
 };
