@@ -4,24 +4,34 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const port = 5000;
 require("dotenv").config();
-const usersRouter = require("./routes/usersRouter");
-const petsRouter = require("./routes/petsRouter");
+let usersRouter;
+let petsRouter;
 
-app.use(
-  cors({
-    origin: true,
-    credentials: true,
-  })
-);
+const mongoUtil = require("./utils/db");
 
-app.use(express.json());
-app.use(express.static("pet-images"));
-app.use(cookieParser());
+mongoUtil.connectToDb(function (err, client) {
+  if (err) console.log(err);
+  if (!err) {
+    console.log("Connected correctly to db");
+    usersRouter = require("./routes/usersRouter");
+    petsRouter = require("./routes/petsRouter");
+    app.use(
+      cors({
+        origin: true,
+        credentials: true,
+      })
+    );
 
-app.use("/users", usersRouter);
+    app.use(express.json());
+    app.use(express.static("pet-images"));
+    app.use(cookieParser());
 
-app.use("/pets", petsRouter);
+    app.use("/users", usersRouter);
 
-app.listen(port, () => {
-  console.log(`Server listening at http://localhost:${port}`);
+    app.use("/pets", petsRouter);
+
+    app.listen(port, () => {
+      console.log(`Server listening at http://localhost:${port}`);
+    });
+  }
 });

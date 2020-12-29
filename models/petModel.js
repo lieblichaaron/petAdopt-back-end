@@ -1,58 +1,44 @@
-const { client } = require("../utils/db");
 const { ObjectID } = require("mongodb");
+const mongoUtil = require("../utils/db");
 
-// const client = createClient();
-const connectToDb = async () => {
-  await client.connect();
-  const db = client.db("PetAdopt");
-  const usersCollection = db.collection("pets");
-  return usersCollection;
-};
 module.exports = class Pet {
+  constructor() {
+    this.petsCollection = mongoUtil.getDb().collection("pets");
+  }
   findById = async (id) => {
     try {
-      const petsCollection = await connectToDb();
-      const pet = await petsCollection.findOne({
+      const pet = await this.petsCollection.findOne({
         _id: ObjectID(id),
       });
       return pet;
     } catch (err) {
       return err.stack;
-    } finally {
-      await client.close();
     }
   };
 
   deleteById = async (id) => {
     try {
-      const petsCollection = await connectToDb();
-      await petsCollection.deleteOne({
+      await this.petsCollection.deleteOne({
         _id: ObjectID(id),
       });
       return "Pet deleted";
     } catch (err) {
       return err.stack;
-    } finally {
-      await client.close();
     }
   };
 
   add = async (petData) => {
     try {
-      const petsCollection = await connectToDb();
-      const newPetsList = await petsCollection.insertOne(petData);
+      const newPetsList = await this.petsCollection.insertOne(petData);
       return newPetsList.insertedId;
     } catch (err) {
       return err.stack;
-    } finally {
-      await client.close();
     }
   };
 
   updateById = async (id, newPetInfo) => {
     try {
-      const petsCollection = await connectToDb();
-      await petsCollection.updateOne(
+      await this.petsCollection.updateOne(
         {
           _id: ObjectID(id),
         },
@@ -75,14 +61,11 @@ module.exports = class Pet {
       return "Changes saved";
     } catch (err) {
       return err.stack;
-    } finally {
-      await client.close();
     }
   };
 
   findByParams = async (params) => {
     try {
-      const petsCollection = await connectToDb();
       const searchedPetInfo = {};
       if (params.type) searchedPetInfo.type = params.type;
       if (params.name) searchedPetInfo.name = params.name;
@@ -91,24 +74,19 @@ module.exports = class Pet {
       if (params.height) searchedPetInfo.height = params.height;
       if (params.weight) searchedPetInfo.weight = params.weight;
 
-      const pet = await petsCollection.find(searchedPetInfo);
+      const pet = await this.petsCollection.find(searchedPetInfo);
       return pet;
     } catch (err) {
       return err.stack;
-    } finally {
-      await client.close();
     }
   };
 
   findAll = async () => {
     try {
-      const petsCollection = await connectToDb();
-      const allPets = await petsCollection.find();
+      const allPets = await this.petsCollection.find();
       return allPets;
     } catch (err) {
       return err.stack;
-    } finally {
-      await client.close();
     }
   };
 };

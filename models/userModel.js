@@ -1,56 +1,42 @@
-const { client } = require("../utils/db");
 const { ObjectID } = require("mongodb");
+const mongoUtil = require("../utils/db");
 
-// const client = createClient();
-const connectToDb = async () => {
-  await client.connect();
-  const db = client.db("PetAdopt");
-  const usersCollection = db.collection("users");
-  return usersCollection;
-};
 module.exports = class User {
+  constructor() {
+    this.usersCollection = mongoUtil.getDb().collection("users");
+  }
   findById = async (id) => {
     try {
-      const usersCollection = await connectToDb();
-      const user = await usersCollection.findOne({
+      const user = await this.usersCollection.findOne({
         _id: ObjectID(id),
       });
       return user;
     } catch (err) {
       return err.stack;
-    } finally {
-      await client.close();
     }
   };
   deleteById = async (id) => {
     try {
-      const usersCollection = await connectToDb();
-      await usersCollection.deleteOne({
+      await this.usersCollection.deleteOne({
         _id: ObjectID(id),
       });
       return "User deleted";
     } catch (err) {
       return err.stack;
-    } finally {
-      await client.close();
     }
   };
 
   add = async (userData) => {
     try {
-      const usersCollection = await connectToDb();
-      const newUsersList = await usersCollection.insertOne(userData);
+      const newUsersList = await this.usersCollection.insertOne(userData);
       return newUsersList.insertedId;
     } catch (err) {
       return err.stack;
-    } finally {
-      await client.close();
     }
   };
   updateById = async (id, newUserInfo) => {
     try {
-      const usersCollection = await connectToDb();
-      await usersCollection.updateOne(
+      await this.usersCollection.updateOne(
         {
           _id: ObjectID(id),
         },
@@ -67,20 +53,15 @@ module.exports = class User {
       return "Changes saved";
     } catch (err) {
       return err.stack;
-    } finally {
-      await client.close();
     }
   };
 
   findAll = async () => {
     try {
-      const usersCollection = await connectToDb();
-      const allUsers = await usersCollection.find();
+      const allUsers = await this.usersCollection.find();
       return allUsers;
     } catch (err) {
       return err.stack;
-    } finally {
-      await client.close();
     }
   };
 };
