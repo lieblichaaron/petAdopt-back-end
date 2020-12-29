@@ -5,6 +5,16 @@ module.exports = class User {
   constructor() {
     this.usersCollection = mongoUtil.getDb().collection("users");
   }
+  findByField = async (field, value) => {
+    try {
+      const user = await this.usersCollection.findOne({
+        [field]: value,
+      });
+      return user;
+    } catch (err) {
+      return false;
+    }
+  };
   findById = async (id) => {
     try {
       const user = await this.usersCollection.findOne({
@@ -28,8 +38,8 @@ module.exports = class User {
 
   add = async (userData) => {
     try {
-      const newUsersList = await this.usersCollection.insertOne(userData);
-      return newUsersList.insertedId;
+      const newUser = await this.usersCollection.insertOne(userData);
+      return newUser.insertedId;
     } catch (err) {
       return err.stack;
     }

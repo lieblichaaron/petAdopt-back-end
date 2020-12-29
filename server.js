@@ -4,8 +4,6 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const port = 5000;
 require("dotenv").config();
-let usersRouter;
-let petsRouter;
 
 const mongoUtil = require("./utils/db");
 
@@ -13,8 +11,8 @@ mongoUtil.connectToDb(function (err, client) {
   if (err) console.log(err);
   if (!err) {
     console.log("Connected correctly to db");
-    usersRouter = require("./routes/usersRouter");
-    petsRouter = require("./routes/petsRouter");
+    const usersRouter = require("./routes/usersRouter");
+    const petsRouter = require("./routes/petsRouter");
     app.use(
       cors({
         origin: true,

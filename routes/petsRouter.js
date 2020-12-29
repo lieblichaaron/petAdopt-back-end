@@ -21,9 +21,9 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // (Protected to admin only)
-router.post("/pet", checkAdminStatus, upload.single("picture"), addNewPet);
+router.post("/", checkAdminStatus, upload.single("picture"), addNewPet);
 
-router.get("/pet/:id", getPetById);
+router.get("/:id", getPetById);
 
 //   (protected to admin only)
 router.put("/:id", checkAdminStatus, (req, res) => {

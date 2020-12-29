@@ -35,27 +35,32 @@ const addNewUser = async (req, res) => {
     bio: "",
     savedPets: [],
     pets: [],
+    adminStatus: false,
   };
   const userId = await userInstance.add(newUser);
-  const token = createToken(userId);
+  const token = createToken(userId.toString());
   res.cookie("jwt", token, { maxAge });
   res.send(JSON.stringify(userId));
 };
 
-const loginUser = (req, res) => {
-  const token = createToken(req.body.email);
-  /*make sure the cookie cant time out when user is online*/
+const loginUser = async (req, res) => {
+  const user = await userInstance.findByField("email", req.body.email);
+  const userId = user._id;
+  const token = createToken(userId);
   res.cookie("jwt", token, { maxAge });
-  /*send id of req.body.email*/
-  res.send(JSON.stringify(req.body.email));
+  res.send(JSON.stringify(userId));
 };
 const loginUserWithToken = async (req, res) => {
   const token = req.cookies.jwt;
   const payload = await verifyToken(token);
-  const id = JSON.stringify(payload.userId);
-  const newToken = createToken(payload.userId);
-  res.cookie("jwt", newToken, { maxAge });
-  res.send(id);
+  const user = await userInstance.findById(payload.userId);
+  if (user) {
+    const newToken = createToken(payload.userId);
+    res.cookie("jwt", newToken, { maxAge });
+    res.send(payload.userId);
+  } else {
+    res.send("false");
+  }
 };
 const updateUserById = (req, res) => {
   const { id } = req.params;

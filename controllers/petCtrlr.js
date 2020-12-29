@@ -30,9 +30,9 @@ const addNewPet = async (req, res) => {
   newPet.picture = req.file.filename;
   newPet.ownerId = null;
 
-  const petList = await petInstance.add(newPet);
+  await petInstance.add(newPet);
 
-  res.json(JSON.stringify("success"));
+  res.json("Pet successfully added");
 };
 
 const updatePetById = (req, res) => {
