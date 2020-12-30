@@ -1,4 +1,5 @@
 const { ObjectID } = require("mongodb");
+const { encryptPassword } = require("../utils/passwordEncrypt");
 const mongoUtil = require("../utils/db");
 
 module.exports = class User {
@@ -46,18 +47,15 @@ module.exports = class User {
   };
   updateById = async (id, newUserInfo) => {
     try {
+      if (newUserInfo.password) {
+        newUserInfo.password = encryptPassword(newUserInfo.password);
+      }
       await this.usersCollection.updateOne(
         {
           _id: ObjectID(id),
         },
         {
-          $set: {
-            fullName: newUserInfo.fullName,
-            email: newUserInfo.email,
-            password: newUserInfo.password,
-            phoneNumber: newUserInfo.phoneNumber,
-            bio: newUserInfo.bio,
-          },
+          $set: newUserInfo,
         }
       );
       return "Changes saved";

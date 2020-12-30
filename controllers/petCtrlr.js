@@ -57,8 +57,7 @@ const updateAdoptionStatus = async (req, res) => {
   res.json("success");
 };
 const updateSavedPets = async (req, res) => {
-  const { id } = req.params;
-  const petId = id;
+  const petId = req.params.id;
   const token = req.cookies.jwt;
   const payload = await verifyToken(token);
   const userId = payload.userId;

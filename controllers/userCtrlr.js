@@ -1,31 +1,26 @@
 const User = require("../models/userModel");
 const userInstance = new User();
-const { isEmpty } = require("../utils/helper");
+const Pet = require("../models/petModel");
+const petInstance = new Pet();
 const { createToken, verifyToken } = require("../utils/auth");
 const { encryptPassword } = require("../utils/passwordEncrypt");
 const maxAge = 3 * 24 * 60 * 60 * 1000;
 
-const getUsers = (req, res) => {
-  const queryParams = req.query;
-
-  const userList = isEmpty(queryParams)
-    ? userInstance.findAll()
-    : userInstance.findByParams(queryParams);
-
-  res.json(userList);
-};
-
-const getUserById = (req, res) => {
-  const user = userInstance.findById(req.params.id);
-  res.json(user);
-};
-
-const deleteUserById = (req, res) => {
+const getUserPetsById = async (req, res) => {
   const { id } = req.params;
+  const pets = await petInstance.findPetsByUserId(id);
+  res.json(JSON.stringify(pets));
+};
 
-  const userList = userInstance.deleteById(id);
+const getUsers = async (req, res) => {
+  const userList = await userInstance.findAll();
+  res.json(JSON.stringify(userList));
+};
 
-  res.json(userList);
+const getUserById = async (req, res) => {
+  const { id } = req.params;
+  const user = await userInstance.findById(id);
+  res.json(JSON.stringify(user));
 };
 
 const addNewUser = async (req, res) => {
@@ -48,33 +43,37 @@ const loginUser = async (req, res) => {
   res.cookie("jwt", token, { maxAge });
   res.send(JSON.stringify(userId));
 };
+
 const loginUserWithToken = async (req, res) => {
   const token = req.cookies.jwt;
   const payload = await verifyToken(token);
-  const user = await userInstance.findById(payload.userId);
-  if (user) {
-    const newToken = createToken(payload.userId);
-    res.cookie("jwt", newToken, { maxAge });
-    res.send(payload.userId);
+  if (!payload) {
+    res.status(401).send("false");
   } else {
-    res.send("false");
+    const user = await userInstance.findById(payload.userId);
+    if (user) {
+      const newToken = createToken(payload.userId);
+      res.cookie("jwt", newToken, { maxAge });
+      res.send(payload.userId);
+    } else {
+      res.send("false");
+    }
   }
 };
-const updateUserById = (req, res) => {
+
+const updateUserById = async (req, res) => {
   const { id } = req.params;
   const newUserInfo = req.body;
-
-  const userList = userInstance.updateById(id, newUserInfo);
-
-  res.json(userList);
+  await userInstance.updateById(id, newUserInfo);
+  res.send("Update successful");
 };
 
 module.exports = {
   getUsers,
   getUserById,
-  deleteUserById,
   addNewUser,
   updateUserById,
   loginUser,
   loginUserWithToken,
+  getUserPetsById,
 };

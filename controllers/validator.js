@@ -10,6 +10,7 @@ const checkUser = async (req, res, next) => {
   if (!payload) {
     res.status(401).json(JSON.stringify("token expired"));
   } else {
+    /*check that ip address is the same*/
     const user = await userInstance.findById(payload.userId);
     if (user) {
       next();
@@ -36,12 +37,17 @@ const checkAdminStatus = async (req, res, next) => {
     }
   }
 };
-const validateUserSignup = [
+const validateUserInfo = [
   body("email")
     .isEmail()
     .custom(async (value, { req }) => {
       const user = await userInstance.findByField("email", value);
-      if (user) {
+      let payload;
+      if (req.cookies.jwt) {
+        const token = req.cookies.jwt;
+        payload = await verifyToken(token);
+      }
+      if (user && user._id !== payload.userId) {
         throw new Error("An account already exists with that email");
       }
       return true;
@@ -83,7 +89,7 @@ const handleValidationErrors = (req, res, next) => {
 };
 
 module.exports = {
-  validateUserSignup,
+  validateUserInfo,
   validateUserLogin,
   handleValidationErrors,
   checkAdminStatus,

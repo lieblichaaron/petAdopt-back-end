@@ -10,7 +10,7 @@ const verifyToken = async (token) => {
   try {
     const payload = await jwt.verify(token, secretTokenKey);
     if (payload.exp < currentDate) {
-      throw new Error("token no longer valid");
+      throw new Error("token expired");
     }
     return payload;
   } catch {

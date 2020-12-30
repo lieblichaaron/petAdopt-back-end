@@ -5,6 +5,16 @@ module.exports = class Pet {
   constructor() {
     this.petsCollection = mongoUtil.getDb().collection("pets");
   }
+  findPetsByUserId = async (id) => {
+    try {
+      const pets = await this.petsCollection.find({
+        ownerId: id,
+      });
+      return pets;
+    } catch (err) {
+      return err.stack;
+    }
+  };
   findById = async (id) => {
     try {
       const pet = await this.petsCollection.findOne({
@@ -63,19 +73,7 @@ module.exports = class Pet {
           _id: ObjectID(id),
         },
         {
-          $set: {
-            type: newPetInfo.type,
-            name: newPetInfo.name,
-            height: newPetInfo.height,
-            adoptionStatus: newPetInfo.adoptionStatus,
-            weight: newPetInfo.weight,
-            color: newPetInfo.color,
-            bio: newPetInfo.bio,
-            hypoallergenic: newPetInfo.hypoallergenic,
-            dietaryRestrictions: newPetInfo.dietaryRestrictions,
-            breedOfAnimal: newPetInfo.breedOfAnimal,
-            picture: newPetInfo.picture,
-          },
+          $set: newPetInfo,
         }
       );
       return "Changes saved";
@@ -105,15 +103,7 @@ module.exports = class Pet {
   };
   findByqueryParams = async (queryParams) => {
     try {
-      const searchedPetInfo = {};
-      if (queryParams.type) searchedPetInfo.type = queryParams.type;
-      if (queryParams.name) searchedPetInfo.name = queryParams.name;
-      if (queryParams.adoptionStatus)
-        searchedPetInfo.adoptionStatus = queryParams.adoptionStatus;
-      if (queryParams.height) searchedPetInfo.height = queryParams.height;
-      if (queryParams.weight) searchedPetInfo.weight = queryParams.weight;
-
-      const pets = await this.petsCollection.find(searchedPetInfo);
+      const pets = await this.petsCollection.find(queryParams);
       return pets;
     } catch (err) {
       return err.stack;
