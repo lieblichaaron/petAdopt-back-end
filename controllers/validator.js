@@ -4,16 +4,36 @@ const { verifyToken } = require("../utils/auth");
 const User = require("../models/userModel");
 const userInstance = new User();
 
+const checkUser = async (req, res, next) => {
+  const token = req.cookies.jwt;
+  const payload = await verifyToken(token);
+  if (!payload) {
+    res.status(401).json(JSON.stringify("token expired"));
+  } else {
+    const user = await userInstance.findById(payload.userId);
+    if (user) {
+      next();
+    } else {
+      res
+        .status(401)
+        .json(JSON.stringify("Must be a sign up before adopting a pet"));
+    }
+  }
+};
 const checkAdminStatus = async (req, res, next) => {
   const token = req.cookies.jwt;
   const payload = await verifyToken(token);
-  const user = await userInstance.findById(payload.userId);
-  if (user.adminStatus) {
-    next();
+  if (!payload) {
+    res.status(401).json(JSON.stringify("token expired"));
   } else {
-    res
-      .status(401)
-      .json(JSON.stringify("Posting a pet is restricted to admins only"));
+    const user = await userInstance.findById(payload.userId);
+    if (user.adminStatus) {
+      next();
+    } else {
+      res
+        .status(401)
+        .json(JSON.stringify("Posting a pet is restricted to admins only"));
+    }
   }
 };
 const validateUserSignup = [
@@ -67,4 +87,5 @@ module.exports = {
   validateUserLogin,
   handleValidationErrors,
   checkAdminStatus,
+  checkUser,
 };

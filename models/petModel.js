@@ -35,7 +35,27 @@ module.exports = class Pet {
       return err.stack;
     }
   };
-
+  updateAdoptionStatusById = async (id, newAdoptionStatus) => {
+    try {
+      if (newAdoptionStatus.adoptionStatus === "Looking for a new home") {
+        newAdoptionStatus.userId = null;
+      }
+      await this.petsCollection.updateOne(
+        {
+          _id: ObjectID(id),
+        },
+        {
+          $set: {
+            adoptionStatus: newAdoptionStatus.adoptionStatus,
+            ownerId: newAdoptionStatus.userId,
+          },
+        }
+      );
+      return "Changes saved";
+    } catch (err) {
+      return err.stack;
+    }
+  };
   updateById = async (id, newPetInfo) => {
     try {
       await this.petsCollection.updateOne(
@@ -63,19 +83,38 @@ module.exports = class Pet {
       return err.stack;
     }
   };
+  updateSavedBy = async (petId, userId, method) => {
+    try {
+      let operation;
+      if (method === "PUT") {
+        operation = { $push: { savedBy: userId } };
+      } else if (method === "DELETE") {
+        operation = { $pull: { savedBy: userId } };
+      }
 
-  findByParams = async (params) => {
+      await this.petsCollection.updateOne(
+        {
+          _id: ObjectID(petId),
+        },
+        operation
+      );
+      return "Changes saved";
+    } catch (err) {
+      return err.stack;
+    }
+  };
+  findByqueryParams = async (queryParams) => {
     try {
       const searchedPetInfo = {};
-      if (params.type) searchedPetInfo.type = params.type;
-      if (params.name) searchedPetInfo.name = params.name;
-      if (params.adoptionStatus)
-        searchedPetInfo.adoptionStatus = params.adoptionStatus;
-      if (params.height) searchedPetInfo.height = params.height;
-      if (params.weight) searchedPetInfo.weight = params.weight;
+      if (queryParams.type) searchedPetInfo.type = queryParams.type;
+      if (queryParams.name) searchedPetInfo.name = queryParams.name;
+      if (queryParams.adoptionStatus)
+        searchedPetInfo.adoptionStatus = queryParams.adoptionStatus;
+      if (queryParams.height) searchedPetInfo.height = queryParams.height;
+      if (queryParams.weight) searchedPetInfo.weight = queryParams.weight;
 
-      const pet = await this.petsCollection.find(searchedPetInfo);
-      return pet;
+      const pets = await this.petsCollection.find(searchedPetInfo);
+      return pets;
     } catch (err) {
       return err.stack;
     }

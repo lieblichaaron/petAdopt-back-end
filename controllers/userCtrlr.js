@@ -33,8 +33,6 @@ const addNewUser = async (req, res) => {
     ...req.body,
     password: encryptPassword(req.body.password),
     bio: "",
-    savedPets: [],
-    pets: [],
     adminStatus: false,
   };
   const userId = await userInstance.add(newUser);

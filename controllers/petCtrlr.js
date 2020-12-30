@@ -26,22 +26,46 @@ const deletePetById = (req, res) => {
 };
 
 const addNewPet = async (req, res) => {
-  newPet = JSON.parse(req.body.data);
+  let newPet = JSON.parse(req.body.data);
   newPet.picture = req.file.filename;
   newPet.ownerId = null;
+  newPet.savedBy = [];
 
   await petInstance.add(newPet);
 
   res.json("Pet successfully added");
 };
 
-const updatePetById = (req, res) => {
+const updatePetById = async (req, res) => {
   const { id } = req.params;
-  const newPetInfo = req.body;
+  let newPetInfo = JSON.parse(req.body.data);
+  if (req.file) newPetInfo.picture = req.file.filename;
 
-  const petList = petInstance.updateById(id, newPetInfo);
+  await petInstance.updateById(id, newPetInfo);
 
-  res.json(petList);
+  res.json("Pet successfully updated");
+};
+const updateAdoptionStatus = async (req, res) => {
+  const { id } = req.params;
+  let newAdoptionStatus = JSON.parse(req.body);
+  const token = req.cookies.jwt;
+  const payload = await verifyToken(token);
+  newAdoptionStatus.userId = payload.userId;
+
+  await petInstance.updateAdoptionStatusById(id, newAdoptionStatus);
+
+  res.json("success");
+};
+const updateSavedPets = async (req, res) => {
+  const { id } = req.params;
+  const petId = id;
+  const token = req.cookies.jwt;
+  const payload = await verifyToken(token);
+  const userId = payload.userId;
+  const method = req.method;
+  await petInstance.updateSavedBy(petId, userId, method);
+
+  res.json("success");
 };
 
 module.exports = {
@@ -50,4 +74,6 @@ module.exports = {
   deletePetById,
   addNewPet,
   updatePetById,
+  updateAdoptionStatus,
+  updateSavedPets,
 };
