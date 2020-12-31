@@ -40,7 +40,7 @@ module.exports = class User {
   add = async (userData) => {
     try {
       const newUser = await this.usersCollection.insertOne(userData);
-      return newUser.insertedId;
+      return newUser;
     } catch (err) {
       return err.stack;
     }

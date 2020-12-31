@@ -24,24 +24,23 @@ const getUserById = async (req, res) => {
 };
 
 const addNewUser = async (req, res) => {
-  const newUser = {
+  const newUserInfo = {
     ...req.body,
     password: encryptPassword(req.body.password),
     bio: "",
     adminStatus: false,
   };
-  const userId = await userInstance.add(newUser);
-  const token = createToken(userId.toString());
+  const user = await userInstance.add(newUserInfo);
+  const token = createToken(user._id.toString());
   res.cookie("jwt", token, { maxAge });
-  res.send(JSON.stringify(userId));
+  res.send(JSON.stringify(user));
 };
 
 const loginUser = async (req, res) => {
   const user = await userInstance.findByField("email", req.body.email);
-  const userId = user._id;
-  const token = createToken(userId);
+  const token = createToken(user);
   res.cookie("jwt", token, { maxAge });
-  res.send(JSON.stringify(userId));
+  res.send(JSON.stringify(user));
 };
 
 const loginUserWithToken = async (req, res) => {
@@ -52,11 +51,11 @@ const loginUserWithToken = async (req, res) => {
   } else {
     const user = await userInstance.findById(payload.userId);
     if (user) {
-      const newToken = createToken(payload.userId);
+      const newToken = createToken(user);
       res.cookie("jwt", newToken, { maxAge });
-      res.send(payload.userId);
+      res.send(JSON.stringify(user));
     } else {
-      res.send("false");
+      res.send(JSON.stringify("false"));
     }
   }
 };

@@ -10,7 +10,6 @@ const checkUser = async (req, res, next) => {
   if (!payload) {
     res.status(401).json(JSON.stringify("token expired"));
   } else {
-    /*check that ip address is the same*/
     const user = await userInstance.findById(payload.userId);
     if (user) {
       next();
@@ -56,6 +55,15 @@ const validateUserInfo = [
   body("fullName").exists(),
   body("phoneNumber").isMobilePhone(),
 ];
+const validateFieldNumber = (numOfExpectedKeys) => {
+  return (req, res, next) => {
+    if (Object.keys(req.requestBody) > numOfExpectedKeys) {
+      throw new Error("invalid field add");
+    } else {
+      next();
+    }
+  };
+};
 
 const validateUserLogin = [
   body("email").isEmail(),
@@ -81,7 +89,6 @@ const handleValidationErrors = (req, res, next) => {
     errors.array().forEach((error) => {
       errorMessage = error.msg;
     });
-
     res.status(400).json({ error: errorMessage });
   } else {
     next();
@@ -91,6 +98,7 @@ const handleValidationErrors = (req, res, next) => {
 module.exports = {
   validateUserInfo,
   validateUserLogin,
+  validateFieldNumber,
   handleValidationErrors,
   checkAdminStatus,
   checkUser,

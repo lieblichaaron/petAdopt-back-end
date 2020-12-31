@@ -17,10 +17,17 @@ const {
   handleValidationErrors,
   checkUser,
   checkAdminStatus,
+  validateFieldNumber,
 } = require("../controllers/validator");
 
 /* fullName, email, password, phoneNumber */
-router.post("/signup", validateUserInfo, handleValidationErrors, addNewUser);
+router.post(
+  "/signup",
+  validateUserInfo,
+  validateFieldNumber(4),
+  handleValidationErrors,
+  addNewUser
+);
 
 /*email, password*/
 router.post("/login", validateUserLogin, handleValidationErrors, loginUser);
@@ -35,6 +42,7 @@ router.put(
   "/:id",
   checkUser,
   validateUserInfo,
+  validateFieldNumber(5),
   handleValidationErrors,
   updateUserById
 );
