@@ -16,7 +16,7 @@ const checkUser = async (req, res, next) => {
     } else {
       res
         .status(401)
-        .json(JSON.stringify("Must be a sign up before adopting a pet"));
+        .json(JSON.stringify("Must be signed in before adopting a pet"));
     }
   }
 };
@@ -31,7 +31,7 @@ const checkAdminStatus = async (req, res, next) => {
       next();
     } else {
       res
-        .status(401)
+        .status(403)
         .json(JSON.stringify("Posting a pet is restricted to admins only"));
     }
   }
@@ -41,12 +41,15 @@ const validateUserInfo = [
     .isEmail()
     .custom(async (value, { req }) => {
       const user = await userInstance.findByField("email", value);
-      let payload;
+      let signingUp = true;
       if (req.cookies.jwt) {
         const token = req.cookies.jwt;
         payload = await verifyToken(token);
+        if (user._id === payload.userId) {
+          signingUp = false;
+        }
       }
-      if (user && user._id !== payload.userId) {
+      if (user && signingUp) {
         throw new Error("An account already exists with that email");
       }
       return true;
@@ -57,8 +60,8 @@ const validateUserInfo = [
 ];
 const validateFieldNumber = (numOfExpectedKeys) => {
   return (req, res, next) => {
-    if (Object.keys(req.requestBody) > numOfExpectedKeys) {
-      throw new Error("invalid field add");
+    if (Object.keys(req.body) > numOfExpectedKeys) {
+      throw new Error("Invalid field added");
     } else {
       next();
     }

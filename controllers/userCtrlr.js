@@ -31,7 +31,7 @@ const addNewUser = async (req, res) => {
     adminStatus: false,
   };
   const user = await userInstance.add(newUserInfo);
-  const token = createToken(user._id.toString());
+  const token = createToken(user);
   res.cookie("jwt", token, { maxAge });
   res.send(JSON.stringify(user));
 };

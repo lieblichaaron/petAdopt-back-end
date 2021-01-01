@@ -39,7 +39,8 @@ module.exports = class User {
 
   add = async (userData) => {
     try {
-      const newUser = await this.usersCollection.insertOne(userData);
+      const newUserCursor = await this.usersCollection.insertOne(userData);
+      const newUser = newUserCursor.ops[0];
       return newUser;
     } catch (err) {
       return err.stack;
