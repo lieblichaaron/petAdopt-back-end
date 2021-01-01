@@ -49,13 +49,13 @@ const loginUserWithToken = async (req, res) => {
   if (!payload) {
     res.status(401).send("false");
   } else {
-    const user = await userInstance.findById(payload.userId);
+    const user = await userInstance.findById(payload._id);
     if (user) {
       const newToken = createToken(user);
       res.cookie("jwt", newToken, { maxAge });
       res.send(JSON.stringify(user));
     } else {
-      res.send(JSON.stringify("false"));
+      res.send("false");
     }
   }
 };

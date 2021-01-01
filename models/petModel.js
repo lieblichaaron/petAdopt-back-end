@@ -7,8 +7,11 @@ module.exports = class Pet {
   }
   findPetsByUserId = async (id) => {
     try {
-      const pets = await this.petsCollection.find({
-        ownerId: id,
+      const petsCursor = await this.petsCollection.find({
+        ownerId: ObjectID(id),
+      });
+      const pets = petsCursor.map((pet) => {
+        return pet;
       });
       return pets;
     } catch (err) {
