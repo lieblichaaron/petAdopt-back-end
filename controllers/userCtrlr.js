@@ -63,8 +63,10 @@ const loginUserWithToken = async (req, res) => {
 const updateUserById = async (req, res) => {
   const { id } = req.params;
   const newUserInfo = req.body;
-  await userInstance.updateById(id, newUserInfo);
-  res.send("Update successful");
+  if (!("adminStatus" in newUserInfo)) {
+    await userInstance.updateById(id, newUserInfo);
+    res.send("Update successful");
+  }
 };
 
 module.exports = {

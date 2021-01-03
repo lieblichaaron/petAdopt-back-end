@@ -26,7 +26,7 @@ const checkAdminStatus = async (req, res, next) => {
   if (!payload) {
     res.status(401).json(JSON.stringify("token expired"));
   } else {
-    const user = await userInstance.findById(payload.userId);
+    const user = await userInstance.findById(payload._id);
     if (user.adminStatus) {
       next();
     } else {

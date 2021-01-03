@@ -23,7 +23,7 @@ module.exports = class User {
       });
       return user;
     } catch (err) {
-      return err.stack;
+      return false;
     }
   };
   deleteById = async (id) => {

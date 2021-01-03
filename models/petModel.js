@@ -10,9 +10,7 @@ module.exports = class Pet {
       const petsCursor = await this.petsCollection.find({
         ownerId: ObjectID(id),
       });
-      const pets = petsCursor.map((pet) => {
-        return pet;
-      });
+      const pets = petsCursor.toArray();
       return pets;
     } catch (err) {
       return err.stack;
@@ -42,8 +40,8 @@ module.exports = class Pet {
 
   add = async (petData) => {
     try {
-      const newPetsList = await this.petsCollection.insertOne(petData);
-      return newPetsList.insertedId;
+      const newPet = await this.petsCollection.insertOne(petData);
+      return newPet.insertedId;
     } catch (err) {
       return err.stack;
     }
