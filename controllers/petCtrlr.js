@@ -5,26 +5,28 @@ const User = require("../models/userModel");
 const userInstance = new User();
 const { isEmpty } = require("../utils/helper");
 const fs = require("fs");
+const { verifyToken } = require("../utils/auth");
 
-const getPets = (req, res) => {
+const getPets = async (req, res) => {
   const queryParams = req.query;
 
   const petList = isEmpty(queryParams)
-    ? petInstance.findAll()
-    : petInstance.findByParams(queryParams);
+    ? await petInstance.findAll()
+    : await petInstance.findByParams(queryParams);
 
   res.json(petList);
 };
 
-const getPetById = (req, res) => {
-  const pet = petInstance.findById(req.params.id);
+const getPetById = async (req, res) => {
+  const pet = await petInstance.findById(req.params.id);
+  console.log(pet);
   res.json(pet);
 };
 
-const deletePetById = (req, res) => {
+const deletePetById = async (req, res) => {
   const { id } = req.params;
 
-  const petList = petInstance.deleteById(id);
+  const petList = await petInstance.deleteById(id);
 
   res.json(petList);
 };
@@ -64,24 +66,26 @@ const updatePetById = async (req, res) => {
 };
 const updateAdoptionStatus = async (req, res) => {
   const { id } = req.params;
-  let newAdoptionStatus = JSON.parse(req.body);
+  let newAdoptionStatus = req.body;
   const token = req.cookies.jwt;
   const payload = await verifyToken(token);
-  newAdoptionStatus.userId = payload.userId;
+  newAdoptionStatus.ownerId = ObjectID(payload._id);
 
-  await petInstance.updateAdoptionStatusById(id, newAdoptionStatus);
+  const newPetInfo = await petInstance.updateAdoptionStatusById(
+    id,
+    newAdoptionStatus
+  );
 
-  res.json("success");
+  res.json(newPetInfo);
 };
 const updateSavedPets = async (req, res) => {
   const petId = req.params.id;
   const token = req.cookies.jwt;
   const payload = await verifyToken(token);
-  const userId = payload.userId;
-  const method = req.method;
-  await petInstance.updateSavedBy(petId, userId, method);
+  const userId = payload._id;
+  const response = await petInstance.updateSavedBy(petId, userId);
 
-  res.json("success");
+  res.json(response);
 };
 
 module.exports = {

@@ -49,20 +49,18 @@ module.exports = class Pet {
   updateAdoptionStatusById = async (id, newAdoptionStatus) => {
     try {
       if (newAdoptionStatus.adoptionStatus === "Looking for a new home") {
-        newAdoptionStatus.userId = null;
+        newAdoptionStatus.ownerId = null;
       }
       await this.petsCollection.updateOne(
         {
           _id: ObjectID(id),
         },
         {
-          $set: {
-            adoptionStatus: newAdoptionStatus.adoptionStatus,
-            ownerId: newAdoptionStatus.userId,
-          },
+          $set: newAdoptionStatus,
         }
       );
-      return "Changes saved";
+      const pet = await this.findById(id);
+      return pet;
     } catch (err) {
       return err.stack;
     }
@@ -82,12 +80,14 @@ module.exports = class Pet {
       return err.stack;
     }
   };
-  updateSavedBy = async (petId, userId, method) => {
+  updateSavedBy = async (petId, userId) => {
     try {
+      const pet = await this.findById(petId);
       let operation;
-      if (method === "PUT") {
+      console.log(userId);
+      if (!pet.savedBy.includes(userId)) {
         operation = { $push: { savedBy: userId } };
-      } else if (method === "DELETE") {
+      } else {
         operation = { $pull: { savedBy: userId } };
       }
 

@@ -8,19 +8,26 @@ const maxAge = 3 * 24 * 60 * 60 * 1000;
 
 const getUserPetsById = async (req, res) => {
   const { id } = req.params;
-  const pets = await petInstance.findPetsByUserId(id);
-  res.json(JSON.stringify(pets));
+  if (id === "token") {
+    const token = req.cookies.jwt;
+    const payload = await verifyToken(token);
+    const pets = await petInstance.findPetsByUserId(payload._id);
+    res.json(pets);
+  } else {
+    const pets = await petInstance.findPetsByUserId(id);
+    res.json(pets);
+  }
 };
 
 const getUsers = async (req, res) => {
   const userList = await userInstance.findAll();
-  res.json(JSON.stringify(userList));
+  res.json(userList);
 };
 
 const getUserById = async (req, res) => {
   const { id } = req.params;
   const user = await userInstance.findById(id);
-  res.json(JSON.stringify(user));
+  res.json(user);
 };
 
 const addNewUser = async (req, res) => {

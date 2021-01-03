@@ -39,11 +39,6 @@ router.get("/", getPets);
 router.put("/:id/adopt", checkUser, updateAdoptionStatus);
 
 // (protected to logged in users)
-router.put("/:id/return", checkUser, updateAdoptionStatus);
-
-// (protected to logged in users)
 router.put("/:id/save", checkUser, updateSavedPets);
 
-// (protected to logged in users)
-router.delete("/:id/save", checkUser, updateSavedPets);
 module.exports = router;
