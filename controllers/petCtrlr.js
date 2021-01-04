@@ -59,10 +59,11 @@ const updatePetById = async (req, res) => {
   const { id } = req.params;
   let newPetInfo = JSON.parse(req.body.data);
   if (req.file) newPetInfo.picture = req.file.filename;
+  if (newPetInfo.ownerId) newPetInfo.ownerId = ObjectID(newPetInfo.ownerId);
 
-  await petInstance.updateById(id, newPetInfo);
+  const updatedPetInfo = await petInstance.updateById(id, newPetInfo);
 
-  res.json("Pet successfully updated");
+  res.json(updatedPetInfo);
 };
 const updateAdoptionStatus = async (req, res) => {
   const { id } = req.params;

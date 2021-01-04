@@ -75,9 +75,10 @@ module.exports = class Pet {
           $set: newPetInfo,
         }
       );
-      return "Changes saved";
+      const pet = await this.findById(id);
+      return pet;
     } catch (err) {
-      return err.stack;
+      return false;
     }
   };
   updateSavedBy = async (petId, userId) => {
