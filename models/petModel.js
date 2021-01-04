@@ -26,7 +26,44 @@ module.exports = class Pet {
       return err.stack;
     }
   };
+  findByqueryParams = async (queryParams) => {
+    try {
+      if ("height" in queryParams && queryParams.height.length === 3) {
+        queryParams.height = {
+          $gte: parseInt(queryParams.height.split("+")[0]),
+        };
+      } else if ("height" in queryParams) {
+        queryParams.height = {
+          $gte: parseInt(queryParams.height.split("-")[0]),
+          $lte: parseInt(queryParams.height.split("-")[1]),
+        };
+      }
+      if ("weight" in queryParams && queryParams.weight.length === 3) {
+        queryParams.weight = {
+          $gte: parseInt(queryParams.weight.split("+")[0]),
+        };
+      } else if ("weight" in queryParams) {
+        queryParams.weight = {
+          $gte: parseInt(queryParams.weight.split("-")[0]),
+          $lte: parseInt(queryParams.weight.split("-")[1]),
+        };
+      }
+      const petsCursor = await this.petsCollection.find(queryParams);
+      const pets = await petsCursor.toArray();
+      return pets;
+    } catch (err) {
+      return err.stack;
+    }
+  };
 
+  findAll = async () => {
+    try {
+      const allPets = await this.petsCollection.find();
+      return allPets;
+    } catch (err) {
+      return err.stack;
+    }
+  };
   deleteById = async (id) => {
     try {
       await this.petsCollection.deleteOne({
@@ -99,23 +136,6 @@ module.exports = class Pet {
         operation
       );
       return "Changes saved";
-    } catch (err) {
-      return err.stack;
-    }
-  };
-  findByqueryParams = async (queryParams) => {
-    try {
-      const pets = await this.petsCollection.find(queryParams);
-      return pets;
-    } catch (err) {
-      return err.stack;
-    }
-  };
-
-  findAll = async () => {
-    try {
-      const allPets = await this.petsCollection.find();
-      return allPets;
     } catch (err) {
       return err.stack;
     }

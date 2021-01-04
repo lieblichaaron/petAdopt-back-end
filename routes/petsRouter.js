@@ -33,7 +33,7 @@ router.get("/:id", getPetById);
 
 router.put("/:id", checkAdminStatus, upload.single("picture"), updatePetById);
 
-router.get("/", getPets);
+router.get("", getPets);
 
 // (protected to logged in users)
 router.put("/:id/adopt", checkUser, updateAdoptionStatus);

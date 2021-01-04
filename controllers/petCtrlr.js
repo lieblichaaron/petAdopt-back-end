@@ -9,17 +9,15 @@ const { verifyToken } = require("../utils/auth");
 
 const getPets = async (req, res) => {
   const queryParams = req.query;
-
   const petList = isEmpty(queryParams)
     ? await petInstance.findAll()
-    : await petInstance.findByParams(queryParams);
+    : await petInstance.findByqueryParams(queryParams);
 
   res.json(petList);
 };
 
 const getPetById = async (req, res) => {
   const pet = await petInstance.findById(req.params.id);
-  console.log(pet);
   res.json(pet);
 };
 
