@@ -48,7 +48,7 @@ module.exports = class User {
   };
   updateById = async (id, newUserInfo) => {
     try {
-      if (newUserInfo.password) {
+      if ("password" in newUserInfo) {
         newUserInfo.password = encryptPassword(newUserInfo.password);
       }
       await this.usersCollection.updateOne(
@@ -59,7 +59,8 @@ module.exports = class User {
           $set: newUserInfo,
         }
       );
-      return "Changes saved";
+      const user = await this.findById(id);
+      return user;
     } catch (err) {
       return err.stack;
     }
@@ -67,7 +68,8 @@ module.exports = class User {
 
   findAll = async () => {
     try {
-      const allUsers = await this.usersCollection.find();
+      const usersCursor = await this.usersCollection.find();
+      const allUsers = await usersCursor.toArray();
       return allUsers;
     } catch (err) {
       return err.stack;

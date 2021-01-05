@@ -85,7 +85,7 @@ module.exports = class Pet {
   };
   updateAdoptionStatusById = async (id, newAdoptionStatus) => {
     try {
-      if (newAdoptionStatus.adoptionStatus === "Looking for a new home") {
+      if (newAdoptionStatus.adoptionStatus === "Available") {
         newAdoptionStatus.ownerId = null;
       }
       await this.petsCollection.updateOne(

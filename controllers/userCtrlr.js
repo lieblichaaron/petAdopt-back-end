@@ -69,10 +69,19 @@ const loginUserWithToken = async (req, res) => {
 
 const updateUserById = async (req, res) => {
   const { id } = req.params;
+  const token = req.cookies.jwt;
+  const payload = await verifyToken(token);
+  if (payload._id !== id) {
+    res.status(403).send("Cannot change other users information");
+    return;
+  }
   const newUserInfo = req.body;
   if (!("adminStatus" in newUserInfo)) {
-    await userInstance.updateById(id, newUserInfo);
-    res.send("Update successful");
+    const updatedUserInfo = await userInstance.updateById(id, newUserInfo);
+    res.json(updatedUserInfo);
+  } else {
+    res.status(403).send("Only admins can change admin status");
+    return;
   }
 };
 

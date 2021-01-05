@@ -18,6 +18,7 @@ const {
   checkUser,
   checkAdminStatus,
   validateFieldNumber,
+  validateUpdatedUserInfo,
 } = require("../controllers/validator");
 
 /* fullName, email, password, phoneNumber */
@@ -41,8 +42,7 @@ router.get("/:id", getUserById);
 router.put(
   "/:id",
   checkUser,
-  validateUserInfo,
-  validateFieldNumber(5),
+  validateUpdatedUserInfo,
   handleValidationErrors,
   updateUserById
 );
