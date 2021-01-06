@@ -36,7 +36,7 @@ const checkAdminStatus = async (req, res, next) => {
     }
   }
 };
-const validateUserSignUp = [
+const validateUserInfo = [
   body("email")
     .isEmail()
     .withMessage("Must be in email format")
@@ -54,14 +54,20 @@ const validateUserSignUp = [
         throw new Error("An account already exists with that email");
       }
       return true;
-    }),
+    })
+    .optional(),
   body("password")
     .isLength({ min: 6 })
-    .withMessage("Password must be at least 6 chars long"),
+    .withMessage("Password must be at least 6 chars long")
+    .optional(),
   body("fullName")
     .isLength({ min: 1 })
-    .withMessage("fullName must contain characters"),
-  body("phoneNumber").isMobilePhone().withMessage("Must be phone number"),
+    .withMessage("fullName must contain characters")
+    .optional(),
+  body("phoneNumber")
+    .isMobilePhone()
+    .withMessage("Must be phone number")
+    .optional(),
 ];
 const validateFieldNumber = (numOfExpectedKeys) => {
   return (req, res, next) => {
@@ -86,37 +92,6 @@ const validateUserLogin = [
     }
   }),
 ];
-const validateUpdatedUserInfo = async (req, res, next) => {
-  if ("email" in req.body) {
-    body("email")
-      .isEmail()
-      .custom(async (value, { req }) => {
-        const user = await userInstance.findByField("email", value);
-        let signingUp = true;
-        if (req.cookies.jwt) {
-          const token = req.cookies.jwt;
-          payload = await verifyToken(token);
-          if (user._id === payload.userId) {
-            signingUp = false;
-          }
-        }
-        if (user && signingUp) {
-          throw new Error("An account already exists with that email");
-        }
-        return true;
-      });
-  }
-  if ("password" in req.body) {
-    body("password").isLength({ min: 6 });
-  }
-  if ("phoneNumber" in req.body) {
-    body("phoneNumber").isMobilePhone();
-  }
-  if ((Object.keys(req.body).length = 0)) {
-    throw new Error("must contain values to change");
-  }
-  next();
-};
 
 const handleValidationErrors = (req, res, next) => {
   const errors = validationResult(req);
@@ -135,11 +110,10 @@ const handleValidationErrors = (req, res, next) => {
 };
 
 module.exports = {
-  validateUserSignUp,
+  validateUserInfo,
   validateUserLogin,
   validateFieldNumber,
   handleValidationErrors,
   checkAdminStatus,
   checkUser,
-  validateUpdatedUserInfo,
 };

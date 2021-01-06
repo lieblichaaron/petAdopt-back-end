@@ -12,19 +12,18 @@ const {
 } = require("../controllers/userCtrlr");
 
 const {
-  validateUserSignUp,
+  validateUserInfo,
   validateUserLogin,
   handleValidationErrors,
   checkUser,
   checkAdminStatus,
   validateFieldNumber,
-  validateUpdatedUserInfo,
 } = require("../controllers/validator");
 
 /* fullName, email, password, phoneNumber */
 router.post(
   "/signup",
-  validateUserSignUp,
+  validateUserInfo,
   validateFieldNumber(4),
   handleValidationErrors,
   addNewUser
@@ -43,8 +42,8 @@ router.get("/:id", getUserById);
 // (protected to logged in user)
 router.put(
   "/:id",
-  checkUser,
-  validateUpdatedUserInfo,
+  // checkUser,
+  validateUserInfo,
   handleValidationErrors,
   updateUserById
 );
