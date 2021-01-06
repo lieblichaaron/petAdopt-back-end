@@ -74,14 +74,12 @@ const validateFieldNumber = (numOfExpectedKeys) => {
 };
 
 const validateUserLogin = [
-  body("email").isEmail(),
-  body("password").exists(),
+  body("email").isEmail().withMessage("Must be in email format"),
   body("password").custom(async (value, { req }) => {
     const user = await userInstance.findByField("email", req.body.email);
     if (!user) {
       throw new Error("No account exists with that email");
-    }
-    if (checkPassword(value, user.password)) {
+    } else if (checkPassword(value, user.password)) {
       return true;
     } else {
       throw new Error("Password does not match that email");

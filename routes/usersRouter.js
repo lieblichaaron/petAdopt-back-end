@@ -22,7 +22,13 @@ const {
 } = require("../controllers/validator");
 
 /* fullName, email, password, phoneNumber */
-router.post("/signup", validateUserSignUp, handleValidationErrors, addNewUser);
+router.post(
+  "/signup",
+  validateUserSignUp,
+  validateFieldNumber(4),
+  handleValidationErrors,
+  addNewUser
+);
 
 /*email, password*/
 router.post("/login", validateUserLogin, handleValidationErrors, loginUser);
