@@ -18,7 +18,18 @@ const getUserPetsById = async (req, res) => {
     res.json(pets);
   }
 };
-
+const getUserSavedPetsById = async (req, res) => {
+  const { id } = req.params;
+  if (id === "token") {
+    const token = req.cookies.jwt;
+    const payload = await verifyToken(token);
+    const pets = await petInstance.findPetsSavedByUserId(payload._id);
+    res.json(pets);
+  } else {
+    const pets = await petInstance.findPetsSavedByUserId(id);
+    res.json(pets);
+  }
+};
 const getUsers = async (req, res) => {
   const userList = await userInstance.findAll();
   res.json(userList);
@@ -86,6 +97,7 @@ const updateUserById = async (req, res) => {
 };
 
 module.exports = {
+  getUserSavedPetsById,
   getUsers,
   getUserById,
   addNewUser,

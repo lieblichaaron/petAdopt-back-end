@@ -16,6 +16,17 @@ module.exports = class Pet {
       return err.stack;
     }
   };
+  findPetsSavedByUserId = async (id) => {
+    try {
+      const petsCursor = await this.petsCollection.find({
+        savedBy: { $in: [ObjectID(id)] },
+      });
+      const pets = petsCursor.toArray();
+      return pets;
+    } catch (err) {
+      return err.stack;
+    }
+  };
   findById = async (id) => {
     try {
       const pet = await this.petsCollection.findOne({
@@ -122,7 +133,6 @@ module.exports = class Pet {
     try {
       const pet = await this.findById(petId);
       let operation;
-      console.log(userId);
       if (!pet.savedBy.includes(userId)) {
         operation = { $push: { savedBy: userId } };
       } else {

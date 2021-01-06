@@ -9,6 +9,7 @@ const {
   loginUser,
   loginUserWithToken,
   getUserPetsById,
+  getUserSavedPetsById,
 } = require("../controllers/userCtrlr");
 
 const {
@@ -35,6 +36,8 @@ router.post("/login", validateUserLogin, handleValidationErrors, loginUser);
 router.get("/login/token", loginUserWithToken);
 
 router.get("/:id/pets", getUserPetsById);
+
+router.get("/:id/saved", getUserSavedPetsById);
 
 router.get("/:id", getUserById);
 
