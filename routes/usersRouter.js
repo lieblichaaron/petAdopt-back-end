@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const fs = require("fs");
 const {
   getUsers,
   getUserById,
@@ -13,7 +12,7 @@ const {
 } = require("../controllers/userCtrlr");
 
 const {
-  validateUserInfo,
+  validateUserSignUp,
   validateUserLogin,
   handleValidationErrors,
   checkUser,
@@ -23,13 +22,7 @@ const {
 } = require("../controllers/validator");
 
 /* fullName, email, password, phoneNumber */
-router.post(
-  "/signup",
-  validateUserInfo,
-  validateFieldNumber(4),
-  handleValidationErrors,
-  addNewUser
-);
+router.post("/signup", validateUserSignUp, handleValidationErrors, addNewUser);
 
 /*email, password*/
 router.post("/login", validateUserLogin, handleValidationErrors, loginUser);

@@ -36,9 +36,10 @@ const checkAdminStatus = async (req, res, next) => {
     }
   }
 };
-const validateUserInfo = [
+const validateUserSignUp = [
   body("email")
     .isEmail()
+    .withMessage("Must be in email format")
     .custom(async (value, { req }) => {
       const user = await userInstance.findByField("email", value);
       let signingUp = true;
@@ -54,9 +55,13 @@ const validateUserInfo = [
       }
       return true;
     }),
-  body("password").isLength({ min: 6 }),
-  body("fullName").exists(),
-  body("phoneNumber").isMobilePhone(),
+  body("password")
+    .isLength({ min: 6 })
+    .withMessage("Password must be at least 6 chars long"),
+  body("fullName")
+    .isLength({ min: 1 })
+    .withMessage("fullName must contain characters"),
+  body("phoneNumber").isMobilePhone().withMessage("Must be phone number"),
 ];
 const validateFieldNumber = (numOfExpectedKeys) => {
   return (req, res, next) => {
@@ -120,17 +125,19 @@ const handleValidationErrors = (req, res, next) => {
 
   if (!errors.isEmpty()) {
     let errorMessage;
-    errors.array().forEach((error) => {
-      errorMessage = error.msg;
-    });
-    res.status(400).json({ error: errorMessage });
+    if (errors.array().length === 1) {
+      errorMessage = errors.array()[0].msg;
+      res.status(400).json({ error: errorMessage });
+    } else {
+      res.status(400).json(errors.array());
+    }
   } else {
     next();
   }
 };
 
 module.exports = {
-  validateUserInfo,
+  validateUserSignUp,
   validateUserLogin,
   validateFieldNumber,
   handleValidationErrors,
