@@ -18,12 +18,14 @@ const {
   checkUser,
   checkAdminStatus,
   validateFieldNumber,
+  sanitizeUserInfo,
 } = require("../controllers/validator");
 
 /* fullName, email, password, phoneNumber */
 router.post(
   "/signup",
   validateUserInfo,
+  sanitizeUserInfo,
   validateFieldNumber(4),
   handleValidationErrors,
   addNewUser
@@ -44,6 +46,7 @@ router.put(
   "/:id",
   // checkUser,
   validateUserInfo,
+  sanitizeUserInfo,
   handleValidationErrors,
   updateUserById
 );

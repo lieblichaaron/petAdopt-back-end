@@ -8,15 +8,13 @@ const checkUser = async (req, res, next) => {
   const token = req.cookies.jwt;
   const payload = await verifyToken(token);
   if (!payload) {
-    res.status(401).json(JSON.stringify("token expired"));
+    res.status(401).send("token expired");
   } else {
     const user = await userInstance.findById(payload._id);
     if (user) {
       next();
     } else {
-      res
-        .status(401)
-        .json(JSON.stringify("Must be signed in before adopting a pet"));
+      res.status(401).send("Must be signed in before adopting a pet");
     }
   }
 };
@@ -24,15 +22,13 @@ const checkAdminStatus = async (req, res, next) => {
   const token = req.cookies.jwt;
   const payload = await verifyToken(token);
   if (!payload) {
-    res.status(401).json(JSON.stringify("token expired"));
+    res.status(401).send("token expired");
   } else {
     const user = await userInstance.findById(payload._id);
     if (user.adminStatus) {
       next();
     } else {
-      res
-        .status(403)
-        .json(JSON.stringify("Posting a pet is restricted to admins only"));
+      res.status(403).send("Posting a pet is restricted to admins only");
     }
   }
 };
@@ -69,10 +65,21 @@ const validateUserInfo = [
     .withMessage("Must be phone number")
     .optional(),
 ];
+
+const sanitizeUserInfo = async (req, res, next) => {
+  let newUserInfo = {};
+  if ("fullName" in req.body) newUserInfo.fullName = req.body.fullName;
+  if ("phoneNumber" in req.body) newUserInfo.phoneNumber = req.body.phoneNumber;
+  if ("email" in req.body) newUserInfo.email = req.body.email;
+  if ("password" in req.body) newUserInfo.password = req.body.password;
+  if ("bio" in req.body) newUserInfo.bio = req.body.bio;
+  req.body = newUserInfo;
+  next();
+};
 const validateFieldNumber = (numOfExpectedKeys) => {
   return (req, res, next) => {
-    if (Object.keys(req.body) > numOfExpectedKeys) {
-      throw new Error("Invalid field added");
+    if (Object.keys(req.body).length < numOfExpectedKeys) {
+      res.status(400).send("All fields must be full");
     } else {
       next();
     }
@@ -116,4 +123,5 @@ module.exports = {
   handleValidationErrors,
   checkAdminStatus,
   checkUser,
+  sanitizeUserInfo,
 };

@@ -82,16 +82,10 @@ const updateUserById = async (req, res) => {
   const { id } = req.params;
   const token = req.cookies.jwt;
   const payload = await verifyToken(token);
-  // if (payload._id !== id) {
-  //   res.status(403).send("Cannot change other users information");
-  //   return;
-  // }
-  let newUserInfo = {};
-  if ("fullName" in req.body) newUserInfo.fullName = req.body.fullName;
-  if ("phoneNumber" in req.body) newUserInfo.phoneNumber = req.body.phoneNumber;
-  if ("email" in req.body) newUserInfo.email = req.body.email;
-  if ("password" in req.body) newUserInfo.password = req.body.password;
-  if ("bio" in req.body) newUserInfo.bio = req.body.bio;
+  if (payload._id !== id) {
+    res.status(403).send("Cannot change other users information");
+    return;
+  }
 
   const updatedUserInfo = await userInstance.updateById(id, newUserInfo);
   res.json(updatedUserInfo);
