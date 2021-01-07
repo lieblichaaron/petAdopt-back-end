@@ -44,7 +44,7 @@ router.get("/:id", getUserById);
 // (protected to logged in user)
 router.put(
   "/:id",
-  // checkUser,
+  checkUser,
   validateUserInfo,
   sanitizeUserInfo,
   handleValidationErrors,

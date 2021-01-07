@@ -7,9 +7,10 @@ module.exports = class User {
     this.usersCollection = mongoUtil.getDb().collection("users");
   }
   findByField = async (field, value) => {
+    const caseInsensitiveEmail = new RegExp(`^${value}`, "i");
     try {
       const user = await this.usersCollection.findOne({
-        [field]: value,
+        [field]: { $regex: caseInsensitiveEmail },
       });
       return user;
     } catch (err) {
