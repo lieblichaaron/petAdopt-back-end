@@ -10,7 +10,14 @@ const {
   updateAdoptionStatus,
   updateSavedPets,
 } = require("../controllers/petCtrlr");
-const { checkAdminStatus, checkUser } = require("../controllers/validator");
+const {
+  checkAdminStatus,
+  checkUser,
+  validatePetInfo,
+  sanitizePetInfo,
+  handleValidationErrors,
+  validateFieldNumber,
+} = require("../controllers/validator");
 
 const storage = multer.diskStorage({
   destination: (req, file, callback) => {
@@ -23,14 +30,58 @@ const storage = multer.diskStorage({
     );
   },
 });
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 150000,
+  },
+  fileFilter: (req, file, cb) => {
+    if (
+      file.mimetype == "image/png" ||
+      file.mimetype == "image/jpg" ||
+      file.mimetype == "image/jpeg"
+    ) {
+      cb(null, true);
+    } else {
+      cb(null, false);
+      return cb(new Error("Only .png, .jpg and .jpeg file format allowed!"));
+    }
+  },
+}).single("picture");
 
-const upload = multer({ storage });
-
-router.post("/", checkAdminStatus, upload.single("picture"), addNewPet);
+const handleImage = (req, res, next) => {
+  upload(req, res, function (err) {
+    if (err instanceof multer.MulterError) {
+      res.json("Image file size is too large");
+    } else if (err) {
+      res.json(err.message);
+    } else {
+      next();
+    }
+  });
+};
+router.post(
+  "/",
+  checkAdminStatus,
+  handleImage,
+  sanitizePetInfo,
+  validatePetInfo,
+  validateFieldNumber(11),
+  handleValidationErrors,
+  addNewPet
+);
 
 router.get("/:id", getPetById);
 
-router.put("/:id", checkAdminStatus, upload.single("picture"), updatePetById);
+router.put(
+  "/:id",
+  checkAdminStatus,
+  handleImage,
+  sanitizePetInfo,
+  validatePetInfo,
+  handleValidationErrors,
+  updatePetById
+);
 
 router.get("", getPets);
 
