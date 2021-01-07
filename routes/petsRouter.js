@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const multer = require("multer");
-const path = require("path");
+const { upload } = require("../utils/cloudinary");
+
 const {
   addNewPet,
   getPetById,
@@ -9,6 +10,7 @@ const {
   getPets,
   updateAdoptionStatus,
   updateSavedPets,
+  addPetImageToCloudinary,
 } = require("../controllers/petCtrlr");
 const {
   checkAdminStatus,
@@ -18,36 +20,6 @@ const {
   handleValidationErrors,
   validateFieldNumber,
 } = require("../controllers/validator");
-
-const storage = multer.diskStorage({
-  destination: (req, file, callback) => {
-    callback(null, "./pet-images");
-  },
-  filename: (req, file, cb) => {
-    cb(
-      null,
-      `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`
-    );
-  },
-});
-const upload = multer({
-  storage: storage,
-  limits: {
-    fileSize: 150000,
-  },
-  fileFilter: (req, file, cb) => {
-    if (
-      file.mimetype == "image/png" ||
-      file.mimetype == "image/jpg" ||
-      file.mimetype == "image/jpeg"
-    ) {
-      cb(null, true);
-    } else {
-      cb(null, false);
-      return cb(new Error("Only .png, .jpg and .jpeg file format allowed!"));
-    }
-  },
-}).single("picture");
 
 const handleImage = (req, res, next) => {
   upload(req, res, function (err) {
@@ -68,6 +40,7 @@ router.post(
   validatePetInfo,
   validateFieldNumber(8),
   handleValidationErrors,
+  addPetImageToCloudinary,
   addNewPet
 );
 
@@ -80,6 +53,7 @@ router.put(
   sanitizePetInfo,
   validatePetInfo,
   handleValidationErrors,
+  addPetImageToCloudinary,
   updatePetById
 );
 

@@ -5,6 +5,11 @@ const User = require("../models/userModel");
 const userInstance = new User();
 const fs = require("fs");
 
+const capitalize = (s) => {
+  if (typeof s !== "string") return "";
+  return s.charAt(0).toUpperCase() + s.slice(1);
+};
+
 const checkUser = async (req, res, next) => {
   const token = req.cookies.jwt;
   const payload = await verifyToken(token);
@@ -174,20 +179,21 @@ const validatePetInfo = [
 const sanitizePetInfo = async (req, res, next) => {
   req.body.data = JSON.parse(req.body.data);
   let newPetInfo = {};
-  if ("type" in req.body.data) newPetInfo.type = req.body.data.type;
-  if ("name" in req.body.data) newPetInfo.name = req.body.data.name;
+  if ("type" in req.body.data) newPetInfo.type = capitalize(req.body.data.type);
+  if ("name" in req.body.data) newPetInfo.name = capitalize(req.body.data.name);
   if ("adoptionStatus" in req.body.data)
-    newPetInfo.adoptionStatus = req.body.data.adoptionStatus;
+    newPetInfo.adoptionStatus = capitalize(req.body.data.adoptionStatus);
   if ("ownerId" in req.body.data) newPetInfo.ownerId = req.body.data.ownerId;
   if ("height" in req.body.data) newPetInfo.height = req.body.data.height;
   if ("weight" in req.body.data) newPetInfo.weight = req.body.data.weight;
-  if ("color" in req.body.data) newPetInfo.color = req.body.data.color;
+  if ("color" in req.body.data)
+    newPetInfo.color = capitalize(req.body.data.color);
   if ("hypoallergenic" in req.body.data)
     newPetInfo.hypoallergenic = req.body.data.hypoallergenic;
   if ("dietaryRestrictions" in req.body.data)
     newPetInfo.dietaryRestrictions = req.body.data.dietaryRestrictions;
   if ("breedOfAnimal" in req.body.data)
-    newPetInfo.breedOfAnimal = req.body.data.breedOfAnimal;
+    newPetInfo.breedOfAnimal = capitalize(req.body.data.breedOfAnimal);
   if ("bio" in req.body.data) newPetInfo.bio = req.body.data.bio;
   req.body = newPetInfo;
   next();

@@ -1,10 +1,10 @@
 const { ObjectID } = require("mongodb");
 const Pet = require("../models/petModel");
 const petInstance = new Pet();
-const User = require("../models/userModel");
-const userInstance = new User();
 const { isEmpty } = require("../utils/helper");
 const { verifyToken } = require("../utils/auth");
+const { parser, cloudinary } = require("../utils/cloudinary");
+const path = require("path");
 
 const getPets = async (req, res) => {
   const queryParams = req.query;
@@ -29,13 +29,33 @@ const deletePetById = async (req, res) => {
 };
 
 const addNewPet = async (req, res) => {
+  console.log(req.body);
   let newPet = req.body;
-  newPet.picture = req.file.filename;
   if (newPet.ownerId) newPet.ownerId = ObjectID(newPet.ownerId);
   newPet.savedBy = [];
   await petInstance.add(newPet);
 
   res.json("Pet successfully added");
+};
+
+const addPetImageToCloudinary = (req, res, next) => {
+  if (req.file) {
+    parser.format(
+      path.extname(req.file.originalname).toString(),
+      req.file.buffer
+    );
+
+    cloudinary.uploader.upload(parser.content, (error, result) => {
+      if (error) {
+        console.log(error);
+      } else {
+        req.body.picture = result.secure_url;
+      }
+      next();
+    });
+  } else {
+    next();
+  }
 };
 
 const updatePetById = async (req, res) => {
@@ -80,4 +100,5 @@ module.exports = {
   updatePetById,
   updateAdoptionStatus,
   updateSavedPets,
+  addPetImageToCloudinary,
 };
