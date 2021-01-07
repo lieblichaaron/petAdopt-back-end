@@ -88,6 +88,9 @@ module.exports = class Pet {
 
   add = async (petData) => {
     try {
+      if (petData.adoptionStatus === "Available") {
+        petData.ownerId = null;
+      }
       const newPet = await this.petsCollection.insertOne(petData);
       return newPet.insertedId;
     } catch (err) {
@@ -115,6 +118,9 @@ module.exports = class Pet {
   };
   updateById = async (id, newPetInfo) => {
     try {
+      if (newPetInfo.adoptionStatus === "Available") {
+        newPetInfo.ownerId = null;
+      }
       await this.petsCollection.updateOne(
         {
           _id: ObjectID(id),

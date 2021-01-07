@@ -79,11 +79,14 @@ const sanitizeUserInfo = async (req, res, next) => {
 };
 const validateFieldNumber = (numOfExpectedKeys) => {
   return (req, res, next) => {
-    if (numOfExpectedKeys === 11) {
-      if (
-        Object.keys(req.body).length !== numOfExpectedKeys &&
-        Object.keys(req.body).length !== numOfExpectedKeys - 1
-      ) {
+    if (req.body.adoptionStatus !== "Available") {
+      if (Object.keys(req.body).length < numOfExpectedKeys) {
+        res.status(400).json("All fields must be full");
+      } else {
+        next();
+      }
+    } else if (req.body.adoptionStatus === "Available") {
+      if (Object.keys(req.body).length < 7) {
         res.status(400).json("All fields must be full");
       } else {
         next();

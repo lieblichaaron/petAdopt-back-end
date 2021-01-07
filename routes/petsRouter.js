@@ -66,7 +66,7 @@ router.post(
   handleImage,
   sanitizePetInfo,
   validatePetInfo,
-  validateFieldNumber(11),
+  validateFieldNumber(8),
   handleValidationErrors,
   addNewPet
 );

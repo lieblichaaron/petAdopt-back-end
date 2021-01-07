@@ -29,11 +29,11 @@ const deletePetById = async (req, res) => {
 };
 
 const addNewPet = async (req, res) => {
-  // let newPet = req.body;
-  // newPet.picture = req.file.filename;
-  // newPet.ownerId = ObjectID(newPet.ownerId);
-  // newPet.savedBy = [];
-  // await petInstance.add(newPet);
+  let newPet = req.body;
+  newPet.picture = req.file.filename;
+  if (newPet.ownerId) newPet.ownerId = ObjectID(newPet.ownerId);
+  newPet.savedBy = [];
+  await petInstance.add(newPet);
 
   res.json("Pet successfully added");
 };
