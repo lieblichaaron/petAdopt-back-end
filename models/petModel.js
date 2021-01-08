@@ -19,7 +19,7 @@ module.exports = class Pet {
   findPetsSavedByUserId = async (id) => {
     try {
       const petsCursor = await this.petsCollection.find({
-        savedBy: { $in: [ObjectID(id)] },
+        savedBy: { $in: [id] },
       });
       const pets = petsCursor.toArray();
       return pets;
