@@ -12,7 +12,12 @@ mongoUtil.connectToDb(function (err, client) {
     console.log("Connected correctly to db");
     const usersRouter = require("./routes/usersRouter");
     const petsRouter = require("./routes/petsRouter");
-    app.use(cors());
+    app.use(
+      cors({
+        origin: true,
+        credentials: true,
+      })
+    );
 
     app.use(express.json());
     app.use(express.static("pet-images"));
