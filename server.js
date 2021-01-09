@@ -12,12 +12,7 @@ mongoUtil.connectToDb(function (err, client) {
     console.log("Connected correctly to db");
     const usersRouter = require("./routes/usersRouter");
     const petsRouter = require("./routes/petsRouter");
-    app.use(
-      cors({
-        origin: "https://secret-shelf-16643.herokuapp.com",
-        credentials: true,
-      })
-    );
+    app.use(cors());
 
     app.use(express.json());
     app.use(express.static("pet-images"));
