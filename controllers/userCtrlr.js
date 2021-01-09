@@ -61,6 +61,7 @@ const loginUser = async (req, res) => {
 
 const loginUserWithToken = async (req, res) => {
   const token = req.cookies.jwt;
+  console.log(token);
   const payload = await verifyToken(token);
   if (!payload) {
     res.status(401).send("false");
