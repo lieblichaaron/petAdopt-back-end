@@ -14,7 +14,7 @@ mongoUtil.connectToDb(function (err, client) {
     const petsRouter = require("./routes/petsRouter");
     app.use(
       cors({
-        origin: "http://localhost:3000/",
+        origin: "http://localhost:3000",
         credentials: true,
       })
     );
