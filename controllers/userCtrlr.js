@@ -51,14 +51,14 @@ const addNewUser = async (req, res) => {
   const user = await userInstance.add(newUserInfo);
   const token = createToken(user);
   res.cookie("jwt", token, { maxAge });
-  res.send(JSON.stringify(user));
+  res.json(user);
 };
 
 const loginUser = async (req, res) => {
   const user = await userInstance.findByField("email", req.body.email);
   const token = createToken(user);
   res.cookie("jwt", token, { maxAge });
-  res.send(JSON.stringify(user));
+  res.json(user);
 };
 
 const loginUserWithToken = async (req, res) => {
