@@ -2,7 +2,6 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
-const port = 5000;
 require("dotenv").config();
 
 const mongoUtil = require("./utils/db");
@@ -28,6 +27,10 @@ mongoUtil.connectToDb(function (err, client) {
 
     app.use("/pets", petsRouter);
 
+    let port = process.env.PORT;
+    if (port == null || port == "") {
+      port = 5000;
+    }
     app.listen(port, () => {
       console.log(`Server listening at http://localhost:${port}`);
     });
