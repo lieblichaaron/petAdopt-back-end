@@ -50,15 +50,13 @@ const addNewUser = async (req, res) => {
   };
   const user = await userInstance.add(newUserInfo);
   const token = createToken(user);
-  res.cookie("jwt", token, { maxAge });
-  res.json(user);
+  res.json({ user, token });
 };
 
 const loginUser = async (req, res) => {
   const user = await userInstance.findByField("email", req.body.email);
   const token = createToken(user);
-  res.cookie("jwt", token, { maxAge });
-  res.json(user);
+  res.json({ user, token });
 };
 
 const loginUserWithToken = async (req, res) => {
@@ -70,8 +68,7 @@ const loginUserWithToken = async (req, res) => {
     const user = await userInstance.findById(payload._id);
     if (user) {
       const newToken = createToken(user);
-      res.cookie("jwt", newToken, { maxAge });
-      res.send(JSON.stringify(user));
+      res.json({ user, newToken });
     } else {
       res.send("false");
     }
