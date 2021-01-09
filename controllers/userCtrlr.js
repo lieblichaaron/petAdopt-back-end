@@ -4,8 +4,11 @@ const Pet = require("../models/petModel");
 const petInstance = new Pet();
 const { createToken, verifyToken } = require("../utils/auth");
 const { encryptPassword } = require("../utils/passwordEncrypt");
-const maxAge = 3 * 24 * 60 * 60 * 1000;
-
+const cookieOptions = {
+  maxAge: 3 * 24 * 60 * 60 * 1000,
+  sameSite: "Strict",
+  httpOnly: true,
+};
 const getUserPetsById = async (req, res) => {
   const { id } = req.params;
   if (id === "token") {
@@ -56,6 +59,7 @@ const addNewUser = async (req, res) => {
 const loginUser = async (req, res) => {
   const user = await userInstance.findByField("email", req.body.email);
   const token = createToken(user);
+  res.cookie("jwt", token, cookieOptions);
   res.json({ user, token });
 };
 
