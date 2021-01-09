@@ -12,6 +12,7 @@ mongoUtil.connectToDb(function (err, client) {
     console.log("Connected correctly to db");
     const usersRouter = require("./routes/usersRouter");
     const petsRouter = require("./routes/petsRouter");
+    app.set("trust proxy", 1);
     app.use(
       cors({
         origin: true,
