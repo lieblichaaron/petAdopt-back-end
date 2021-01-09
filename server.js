@@ -14,7 +14,7 @@ mongoUtil.connectToDb(function (err, client) {
     const petsRouter = require("./routes/petsRouter");
     app.use(
       cors({
-        origin: true,
+        origin: "https://secret-shelf-16643.herokuapp.com",
         credentials: true,
       })
     );
