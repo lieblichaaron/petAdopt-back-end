@@ -69,8 +69,9 @@ module.exports = class Pet {
 
   findAll = async () => {
     try {
-      const allPets = await this.petsCollection.find();
-      return allPets;
+      const petsCursor = await this.petsCollection.find();
+      const pets = await petsCursor.toArray();
+      return pets;
     } catch (err) {
       return err.stack;
     }
