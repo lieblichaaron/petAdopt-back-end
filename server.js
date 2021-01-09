@@ -23,9 +23,9 @@ mongoUtil.connectToDb(function (err, client) {
     app.use(express.static("pet-images"));
     app.use(cookieParser());
 
-    app.use("/users", usersRouter);
+    app.use("/api/users", usersRouter);
 
-    app.use("/pets", petsRouter);
+    app.use("/api/pets", petsRouter);
 
     let port = process.env.PORT;
     if (port == null || port == "") {
