@@ -34,8 +34,8 @@ const handleImage = (req, res, next) => {
 };
 router.post(
   "/",
-  checkAdminStatus,
   handleImage,
+  checkAdminStatus,
   sanitizePetInfo,
   validatePetInfo,
   validateFieldNumber(8),
@@ -48,8 +48,8 @@ router.get("/:id", getPetById);
 
 router.put(
   "/:id",
-  checkAdminStatus,
   handleImage,
+  checkAdminStatus,
   sanitizePetInfo,
   validatePetInfo,
   handleValidationErrors,

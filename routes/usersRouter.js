@@ -33,7 +33,7 @@ router.post(
 
 /*email, password*/
 router.post("/login", validateUserLogin, handleValidationErrors, loginUser);
-router.get("/login/token", loginUserWithToken);
+router.post("/login/token", loginUserWithToken);
 
 router.get("/:id/pets", getUserPetsById);
 
@@ -45,13 +45,13 @@ router.get("/:id", getUserById);
 router.put(
   "/:id",
   checkUser,
-  validateUserInfo,
   sanitizeUserInfo,
+  validateUserInfo,
   handleValidationErrors,
   updateUserById
 );
 
 // (protected to admin)
-router.get("/", checkAdminStatus, getUsers);
+router.post("/", checkAdminStatus, getUsers);
 
 module.exports = router;

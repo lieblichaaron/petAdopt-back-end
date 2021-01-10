@@ -11,7 +11,7 @@ const capitalize = (s) => {
 };
 
 const checkUser = async (req, res, next) => {
-  const token = req.cookies.jwt;
+  const token = req.body.token;
   const payload = await verifyToken(token);
   if (!payload) {
     res.status(401).send("token expired");
@@ -25,16 +25,17 @@ const checkUser = async (req, res, next) => {
   }
 };
 const checkAdminStatus = async (req, res, next) => {
-  const token = req.cookies.jwt;
+  let token = req.body.token;
+  if (!token) token = JSON.parse(req.body.data).cookie;
   const payload = await verifyToken(token);
   if (!payload) {
-    res.status(401).send("token expired");
+    res.status(401).json("token expired");
   } else {
     const user = await userInstance.findById(payload._id);
     if (user.adminStatus) {
       next();
     } else {
-      res.status(403).send("Posting a pet is restricted to admins only");
+      res.status(403).json("Posting a pet is restricted to admins only");
     }
   }
 };
@@ -45,10 +46,10 @@ const validateUserInfo = [
     .custom(async (value, { req }) => {
       const user = await userInstance.findByField("email", value);
       let signingUp = true;
-      if (req.cookies.jwt) {
-        const token = req.cookies.jwt;
+      if (req.body.token) {
+        const token = req.body.token;
         payload = await verifyToken(token);
-        if (user._id === payload.userId) {
+        if (user._id == payload._id) {
           signingUp = false;
         }
       }
@@ -74,11 +75,15 @@ const validateUserInfo = [
 
 const sanitizeUserInfo = async (req, res, next) => {
   let newUserInfo = {};
-  if ("fullName" in req.body) newUserInfo.fullName = req.body.fullName;
-  if ("phoneNumber" in req.body) newUserInfo.phoneNumber = req.body.phoneNumber;
-  if ("email" in req.body) newUserInfo.email = req.body.email;
-  if ("password" in req.body) newUserInfo.password = req.body.password;
-  if ("bio" in req.body) newUserInfo.bio = req.body.bio;
+  if ("fullName" in req.body.userInfo)
+    newUserInfo.fullName = req.body.userInfo.fullName;
+  if ("phoneNumber" in req.body.userInfo)
+    newUserInfo.phoneNumber = req.body.userInfo.phoneNumber;
+  if ("email" in req.body.userInfo) newUserInfo.email = req.body.userInfo.email;
+  if ("password" in req.body.userInfo)
+    newUserInfo.password = req.body.userInfo.password;
+  if ("bio" in req.body.userInfo) newUserInfo.bio = req.body.userInfo.bio;
+  newUserInfo.token = req.body.token;
   req.body = newUserInfo;
   next();
 };
@@ -177,7 +182,7 @@ const validatePetInfo = [
   body("bio").isString().withMessage("Bio must be valid").optional(),
 ];
 const sanitizePetInfo = async (req, res, next) => {
-  req.body.data = JSON.parse(req.body.data);
+  req.body.data = JSON.parse(req.body.data).formInfo;
   let newPetInfo = {};
   if ("type" in req.body.data) newPetInfo.type = capitalize(req.body.data.type);
   if ("name" in req.body.data) newPetInfo.name = capitalize(req.body.data.name);
@@ -201,7 +206,6 @@ const sanitizePetInfo = async (req, res, next) => {
 
 const handleValidationErrors = (req, res, next) => {
   const errors = validationResult(req);
-
   if (!errors.isEmpty()) {
     if (errors.array().length === 1) {
       const errorMessage = errors.array()[0].msg;

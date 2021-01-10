@@ -29,7 +29,6 @@ const deletePetById = async (req, res) => {
 };
 
 const addNewPet = async (req, res) => {
-  console.log(req.body);
   let newPet = req.body;
   if (newPet.ownerId) newPet.ownerId = ObjectID(newPet.ownerId);
   newPet.savedBy = [];
@@ -70,8 +69,9 @@ const updatePetById = async (req, res) => {
 };
 const updateAdoptionStatus = async (req, res) => {
   const { id } = req.params;
-  let newAdoptionStatus = req.body;
-  const token = req.cookies.jwt;
+  let newAdoptionStatus = {};
+  newAdoptionStatus.adoptionStatus = req.body.adoptionStatus;
+  const token = req.body.token;
   const payload = await verifyToken(token);
   newAdoptionStatus.ownerId = ObjectID(payload._id);
 
@@ -84,7 +84,7 @@ const updateAdoptionStatus = async (req, res) => {
 };
 const updateSavedPets = async (req, res) => {
   const petId = req.params.id;
-  const token = req.cookies.jwt;
+  const token = req.body.token;
   const payload = await verifyToken(token);
   const userId = payload._id;
   const response = await petInstance.updateSavedBy(petId, userId);

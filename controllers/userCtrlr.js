@@ -7,8 +7,8 @@ const { encryptPassword } = require("../utils/passwordEncrypt");
 
 const getUserPetsById = async (req, res) => {
   const { id } = req.params;
-  if (id === "token") {
-    const token = req.cookies.jwt;
+  if (id.slice(0, 5) === "token") {
+    const token = id.slice(5);
     const payload = await verifyToken(token);
     const pets = await petInstance.findPetsByUserId(payload._id);
     res.json(pets);
@@ -19,8 +19,8 @@ const getUserPetsById = async (req, res) => {
 };
 const getUserSavedPetsById = async (req, res) => {
   const { id } = req.params;
-  if (id === "token") {
-    const token = req.cookies.jwt;
+  if (id.slice(0, 5) === "token") {
+    const token = id.slice(5);
     const payload = await verifyToken(token);
     const pets = await petInstance.findPetsSavedByUserId(payload._id);
     res.json(pets);
@@ -59,8 +59,7 @@ const loginUser = async (req, res) => {
 };
 
 const loginUserWithToken = async (req, res) => {
-  const token = req.cookies.jwt;
-  console.log(req.cookies);
+  const token = req.body.token;
   const payload = await verifyToken(token);
   if (!payload) {
     res.status(401).send("false");
@@ -77,14 +76,14 @@ const loginUserWithToken = async (req, res) => {
 
 const updateUserById = async (req, res) => {
   const { id } = req.params;
-  const token = req.cookies.jwt;
+  const token = req.body.token;
   const payload = await verifyToken(token);
   if (payload._id !== id) {
     res.status(403).send("Cannot change other users information");
     return;
   }
-
-  const updatedUserInfo = await userInstance.updateById(id, newUserInfo);
+  delete req.body.token;
+  const updatedUserInfo = await userInstance.updateById(id, req.body);
   res.json(updatedUserInfo);
 };
 
